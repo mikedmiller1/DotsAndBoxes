@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 
@@ -54,6 +55,7 @@ namespace DotsAndBoxes
             // Initialize the new board
             Board NewBoard;
 
+
             // Take a turn
             do
             {
@@ -61,7 +63,7 @@ namespace DotsAndBoxes
                 CompletedBox = false;
 
 
-                // Run Minimax on the board
+                // Run Minimax on the current board
                 NewBoard = MiniMax( theBoard, SearchDepth );
 
 
@@ -70,10 +72,13 @@ namespace DotsAndBoxes
                 {
                     // Set the flag to true to take another turn
                     CompletedBox = true;
+
+                    // Make the new board the current board
+                    theBoard = NewBoard;
                 }
             }
             // Continue taking a turn as long as long as a box was completed
-            while( CompletedBox );
+            while( CompletedBox && !theBoard.GameOver() );
 
 
             // Return the board
@@ -94,11 +99,37 @@ namespace DotsAndBoxes
             }
 
 
+            // Create a copy of the board
+            Board NewBoard = new Board( theBoard );
 
 
 
+            // ***** FOR DEVELOPMENT ONLY *****
+            // ***** PICK A RANDOM FREE LINE *****
+            // Get the free sides
+            List<Side> FreeSides = NewBoard.GetFreeSides();
 
+            // Pick a random side number
+            int SideNum = R.Next( 0, FreeSides.Count - 1 );
+
+            // Get the random side
+            Side RandomSide = FreeSides[ SideNum ];
+
+            // Get the first free side
+            Side FirstSide = FreeSides[ 0 ];
+
+            // Add it to the board
+            NewBoard.ClaimSide( RandomSide, PlayerID );
+
+
+
+            // Return the new board
+            return NewBoard;
         }
+
+
+
+        
 
 
     } // Solver class

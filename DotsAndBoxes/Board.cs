@@ -1,4 +1,7 @@
-﻿namespace DotsAndBoxes
+﻿using System;
+using System.Collections.Generic;
+
+namespace DotsAndBoxes
 {
     public class Board
     {
@@ -7,6 +10,7 @@
         public readonly int NumCols;
 
         protected Box[,] _board;
+
 
 
         /// <summary>
@@ -22,7 +26,7 @@
             NumCols = theCols;
 
             // Initialize the board
-            _board = new Box[ NumCols, NumRows ];
+            _board = new Box[ NumRows, NumCols ];
 
             // Loop through the rows
             for( int RowNum = 0; RowNum < NumRows; RowNum++ )
@@ -30,8 +34,8 @@
                 // Loop through the columns
                 for( int ColNum = 0; ColNum < NumCols; ColNum++ )
                 {
-                    // Create the box
-                    _board[ ColNum, RowNum ] = new Box();
+                    // Create a new box
+                    _board[ RowNum, ColNum ] = new Box( RowNum, ColNum );
                 }
             }
         }
@@ -44,103 +48,135 @@
         /// </summary>
         /// <param name="theBoard">The board to copy</param>
         public Board( Board theBoard )
+            : this( theBoard.NumRows, theBoard.NumCols )
         {
-            this.NumRows = theBoard.NumRows;
-            this.NumCols = theBoard.NumCols;
-            this._board = theBoard._board;
+            // Get all the sides of the board to copy
+            List<Side> AllSides = theBoard.GetAllSides();
+
+            // Loop through the sides
+            foreach( Side CurrentSide in AllSides )
+            {
+                // Add the side to the board
+                ClaimSide( CurrentSide, CurrentSide.Owner );
+            }
         }
 
 
 
         /// <summary>
         /// Adds a side to the specified position
-        /// Even rows are horizontal sides, odd rows are vertical sides
-        /// Even columns are vertical sides, odd columns are horizontal sides
+        /// Adding a side to a box also adds the corresponding side to the adjacent box
         /// </summary>
-        /// <param name="RowNum">The row number of the side</param>
-        /// <param name="ColNum">The column number of the side</param>
-        /// <param name="Side">The side of the box</param>
-        public void AddSide( int RowNum, int ColNum, BoxSide Side, Player thePlayer )
+        /// <param name="RowNum">The row of the box</param>
+        /// <param name="ColNum">The column of the box</param>
+        /// <param name="theSide">The side of the box</param>
+        public void ClaimSide( int RowNum, int ColNum, BoxSide theSide, Player thePlayer )
         {
-            // Add the sides to the input box
-            switch( Side )
-            {
-                case BoxSide.Top:
-                    _board[ RowNum, ColNum ].Top = true;
-                    break;
-
-                case BoxSide.Bottom:
-                    _board[ RowNum, ColNum ].Bottom = true;
-                    break;
-
-                case BoxSide.Left:
-                    _board[ RowNum, ColNum ].Left = true;
-                    break;
-
-                case BoxSide.Right:
-                    _board[ RowNum, ColNum ].Right = true;
-                    break;
-            }
-
-
-            // Check if this completes the box
-            if( _board[ RowNum, ColNum ].NumSides() == 4 )
-            {
-                _board[ RowNum, ColNum ].Owner = thePlayer;
-            }
+            // Add the side to the input box
+            _board[ RowNum, ColNum ].ClaimSide( theSide, thePlayer );
 
 
             // Add the bottom side to the box above
-            if( RowNum > 0 && Side == BoxSide.Top )
-            {
-                _board[ RowNum - 1, ColNum ].Bottom = true;
-
-                // Check if this completes the box
-                if (_board[ RowNum - 1, ColNum ].NumSides() == 4)
-                {
-                    _board[ RowNum - 1, ColNum ].Owner = thePlayer;
-                }
-            }
-
+            if( RowNum > 0 && theSide == BoxSide.Top )
+            { _board[ RowNum - 1, ColNum ].ClaimSide( BoxSide.Bottom, thePlayer ); }
 
             // Add the top side to the box below
-            if( RowNum < NumRows - 1 && Side == BoxSide.Bottom )
-            {
-                _board[ RowNum + 1, ColNum ].Top = true;
-
-                // Check if this completes the box
-                if (_board[ RowNum + 1, ColNum ].NumSides() == 4)
-                {
-                    _board[ RowNum + 1, ColNum ].Owner = thePlayer;
-                }
-            }
-
+            if( RowNum < NumRows - 1 && theSide == BoxSide.Bottom )
+            { _board[ RowNum + 1, ColNum ].ClaimSide( BoxSide.Top, thePlayer ); }
 
             // Add the right side to the box on the left
-            if( ColNum > 0 && Side == BoxSide.Left )
-            {
-                _board[ RowNum, ColNum - 1 ].Right = true;
-
-                // Check if this completes the box
-                if (_board[ RowNum, ColNum - 1 ].NumSides() == 4)
-                {
-                    _board[ RowNum, ColNum - 1 ].Owner = thePlayer;
-                }
-            }
-
+            if( ColNum > 0 && theSide == BoxSide.Left )
+            { _board[ RowNum, ColNum - 1 ].ClaimSide( BoxSide.Right, thePlayer ); }
 
             // Add the left side to the box on the right
-            if( ColNum < NumCols - 1 && Side == BoxSide.Right )
-            {
-                _board[ RowNum, ColNum + 1 ].Left = true;
+            if( ColNum < NumCols - 1 && theSide == BoxSide.Right )
+            { _board[ RowNum, ColNum + 1 ].ClaimSide( BoxSide.Left, thePlayer ); }
 
-                // Check if this completes the box
-                if (_board[ RowNum, ColNum + 1 ].NumSides() == 4)
+        }
+
+
+
+        /// <summary>
+        /// Adds a side to the specified position
+        /// Adding a side to a box also adds the corresponding side to the adjacent box
+        /// </summary>
+        /// <param name="theSide">The Side to claim</param>
+        /// <param name="thePlayer"></param>
+        public void ClaimSide( Side theSide, Player thePlayer )
+        {
+            ClaimSide( theSide.Row, theSide.Column, theSide.BoxSide, thePlayer );
+        }
+
+
+
+        /// <summary>
+        /// Returns a list of Sides representing the available sides on the board
+        /// </summary>
+        /// <returns></returns>
+        public List<Side> GetFreeSides()
+        {
+            // Initialize the free side list
+            List<Side> theFreeSides = new List<Side>();
+
+
+            // Loop through the rows
+            for (int RowNum = 0; RowNum < NumRows; RowNum++)
+            {
+                // Loop through the columns
+                for (int ColNum = 0; ColNum < NumCols; ColNum++)
                 {
-                    _board[ RowNum, ColNum + 1 ].Owner = thePlayer;
+                    // If the top side is free
+                    if( _board[ RowNum, ColNum ].Top.Owner == Player.None )
+                    { theFreeSides.Add( new Side( RowNum, ColNum, BoxSide.Top ) ); }
+
+                    // If the bottom side is free
+                    if( _board[ RowNum, ColNum ].Bottom.Owner == Player.None)
+                    { theFreeSides.Add( new Side( RowNum, ColNum, BoxSide.Bottom ) ); }
+
+                    // If the left side is free
+                    if( _board[ RowNum, ColNum ].Left.Owner == Player.None)
+                    { theFreeSides.Add( new Side( RowNum, ColNum, BoxSide.Left ) ); }
+
+                    // If the right side is free
+                    if( _board[ RowNum, ColNum ].Right.Owner == Player.None)
+                    { theFreeSides.Add( new Side( RowNum, ColNum, BoxSide.Right ) ); }
                 }
             }
 
+            
+            // Return the free side list
+            return theFreeSides;
+        }
+
+
+
+        /// <summary>
+        /// Returns a list of Sides of all the sides on the board
+        /// </summary>
+        /// <returns></returns>
+        public List<Side> GetAllSides()
+        {
+            // Initialize the side list
+            List<Side> theSides = new List<Side>();
+
+
+            // Loop through the rows
+            for (int RowNum = 0; RowNum < NumRows; RowNum++)
+            {
+                // Loop through the columns
+                for (int ColNum = 0; ColNum < NumCols; ColNum++)
+                {
+                    // Add the sides
+                    theSides.Add( _board[ RowNum, ColNum ].Top );
+                    theSides.Add( _board[ RowNum, ColNum ].Bottom );
+                    theSides.Add( _board[ RowNum, ColNum ].Left );
+                    theSides.Add( _board[ RowNum, ColNum ].Right );
+                }
+            }
+
+
+            // Return the side list
+            return theSides;
         }
 
 

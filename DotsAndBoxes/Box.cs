@@ -2,43 +2,95 @@
 {
     public class Box
     {
-        // Box borders
-        private bool _top = false;
-        public bool Top
+        /// <summary>
+        /// Properties
+        /// </summary>
+        public Player Owner = Player.None;
+
+        public readonly int Row;
+        public readonly int Column;
+
+        public Side Top;
+        public Side Bottom;
+        public Side Left;
+        public Side Right;
+        
+
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="theRow">The row index</param>
+        /// <param name="theColumn">The column index</param>
+        public Box( int theRow, int theColumn )
         {
-            get { return _top; }
-            set { _top = value; }
+            Row    = theRow;
+            Column = theColumn;
+            Top    = new Side( theRow, theColumn, BoxSide.Top );
+            Bottom = new Side( theRow, theColumn, BoxSide.Bottom );
+            Left   = new Side( theRow, theColumn, BoxSide.Left );
+            Right  = new Side( theRow, theColumn, BoxSide.Right );
         }
 
-        private bool _bottom = false;
-        public bool Bottom
-        {
-            get { return _bottom; }
-            set { _bottom = value; }
-        }
 
-        private bool _left = false;
-        public bool Left
-        {
-            get { return _left; }
-            set { _left = value ; }
-        }
 
-        private bool _right = false;
-        public bool Right
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="theRow">The row index</param>
+        /// <param name="theColumn">The column index</param>
+        /// <param name="theSide">The side to set</param>
+        public Box( int theRow, int theColumn, Side theSide )
+            : this( theRow, theColumn )  // Calls the base constructor
         {
-            get { return _right; }
-            set { _right = value; }
+            ClaimSide( theSide, Player.None );
         }
 
 
 
-        // Box owner
-        private Player _owner = Player.None;
-        public Player Owner
+        /// <summary>
+        /// Adds a side to the box
+        /// </summary>
+        /// <param name="theSide"></param>
+        /// <param name="thePlayer"></param>
+        public void ClaimSide( BoxSide theSide, Player thePlayer )
         {
-            get { return _owner; }
-            set { _owner = value; }
+            // Add the side to the box
+            switch( theSide )
+            {
+                case BoxSide.Top:
+                    Top.Owner = thePlayer;
+                    break;
+
+                case BoxSide.Bottom:
+                    Bottom.Owner = thePlayer;
+                    break;
+
+                case BoxSide.Left:
+                    Left.Owner = thePlayer;
+                    break;
+
+                case BoxSide.Right:
+                    Right.Owner = thePlayer;
+                    break;
+            }
+
+            // Check if this completes the box
+            if( thePlayer != Player.None && NumSides() == 4 )
+            {
+                Owner = thePlayer;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Adds a side to the box
+        /// </summary>
+        /// <param name="theSide">The side to add</param>
+        public void ClaimSide( Side theSide, Player thePlayer )
+        {
+            ClaimSide( theSide.BoxSide, thePlayer );
         }
 
 
@@ -54,16 +106,16 @@
 
 
             // Top
-            if( Top ) { theSides++; }
+            if( Top.Owner != Player.None ) { theSides++; }
 
             // Bottom
-            if( Bottom ) { theSides++; }
+            if( Bottom.Owner != Player.None) { theSides++; }
 
             // Left
-            if( Left ) { theSides++; }
+            if( Left.Owner != Player.None) { theSides++; }
 
             // Right
-            if( Right ) { theSides++; }
+            if( Right.Owner != Player.None) { theSides++; }
 
 
             // Return the number of sides

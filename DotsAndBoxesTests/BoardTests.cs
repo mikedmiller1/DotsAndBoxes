@@ -24,15 +24,15 @@ namespace DotsAndBoxesTests
 
 
             // Act
-            Board00_Top.AddSide( 0, 0, BoxSide.Top, thePlayer );
-            Board00_Bottom.AddSide( 0, 0, BoxSide.Bottom, thePlayer );
-            Board00_Left.AddSide( 0, 0, BoxSide.Left, thePlayer );
-            Board00_Right.AddSide( 0, 0, BoxSide.Right, thePlayer );
+            Board00_Top.ClaimSide( 0, 0, BoxSide.Top, thePlayer );
+            Board00_Bottom.ClaimSide( 0, 0, BoxSide.Bottom, thePlayer );
+            Board00_Left.ClaimSide( 0, 0, BoxSide.Left, thePlayer );
+            Board00_Right.ClaimSide( 0, 0, BoxSide.Right, thePlayer );
 
-            Board11_Top.AddSide( 1, 1, BoxSide.Top, thePlayer );
-            Board11_Bottom.AddSide( 1, 1, BoxSide.Bottom, thePlayer );
-            Board11_Left.AddSide( 1, 1, BoxSide.Left, thePlayer );
-            Board11_Right.AddSide( 1, 1, BoxSide.Right, thePlayer );
+            Board11_Top.ClaimSide( 1, 1, BoxSide.Top, thePlayer );
+            Board11_Bottom.ClaimSide( 1, 1, BoxSide.Bottom, thePlayer );
+            Board11_Left.ClaimSide( 1, 1, BoxSide.Left, thePlayer );
+            Board11_Right.ClaimSide( 1, 1, BoxSide.Right, thePlayer );
 
             Box Board00_Top_Box00 = Board00_Top.GetBox( 0, 0 );
 
@@ -60,19 +60,19 @@ namespace DotsAndBoxesTests
             Board Board4Sides = new Board( 1, 1 );
 
             // Act
-            Board1Sides.AddSide( 0, 0, BoxSide.Top, thePlayer );
+            Board1Sides.ClaimSide( 0, 0, BoxSide.Top, thePlayer );
 
-            Board2Sides.AddSide( 0, 0, BoxSide.Top, thePlayer );
-            Board2Sides.AddSide( 0, 0, BoxSide.Bottom, thePlayer );
+            Board2Sides.ClaimSide( 0, 0, BoxSide.Top, thePlayer );
+            Board2Sides.ClaimSide( 0, 0, BoxSide.Bottom, thePlayer );
 
-            Board3Sides.AddSide( 0, 0, BoxSide.Top, thePlayer );
-            Board3Sides.AddSide( 0, 0, BoxSide.Bottom, thePlayer );
-            Board3Sides.AddSide( 0, 0, BoxSide.Left, thePlayer );
+            Board3Sides.ClaimSide( 0, 0, BoxSide.Top, thePlayer );
+            Board3Sides.ClaimSide( 0, 0, BoxSide.Bottom, thePlayer );
+            Board3Sides.ClaimSide( 0, 0, BoxSide.Left, thePlayer );
 
-            Board4Sides.AddSide( 0, 0, BoxSide.Top, thePlayer );
-            Board4Sides.AddSide( 0, 0, BoxSide.Bottom, thePlayer );
-            Board4Sides.AddSide( 0, 0, BoxSide.Left, thePlayer );
-            Board4Sides.AddSide( 0, 0, BoxSide.Right, thePlayer );
+            Board4Sides.ClaimSide( 0, 0, BoxSide.Top, thePlayer );
+            Board4Sides.ClaimSide( 0, 0, BoxSide.Bottom, thePlayer );
+            Board4Sides.ClaimSide( 0, 0, BoxSide.Left, thePlayer );
+            Board4Sides.ClaimSide( 0, 0, BoxSide.Right, thePlayer );
 
             // Assert
 
@@ -93,19 +93,19 @@ namespace DotsAndBoxesTests
             Board Board4Sides = new Board( 1, 1 );
 
             // Act
-            Board1Sides.AddSide( 0, 0, BoxSide.Top, thePlayer );
+            Board1Sides.ClaimSide( 0, 0, BoxSide.Top, thePlayer );
 
-            Board2Sides.AddSide( 0, 0, BoxSide.Top, thePlayer );
-            Board2Sides.AddSide( 0, 0, BoxSide.Bottom, thePlayer );
+            Board2Sides.ClaimSide( 0, 0, BoxSide.Top, thePlayer );
+            Board2Sides.ClaimSide( 0, 0, BoxSide.Bottom, thePlayer );
 
-            Board3Sides.AddSide( 0, 0, BoxSide.Top, thePlayer );
-            Board3Sides.AddSide( 0, 0, BoxSide.Bottom, thePlayer );
-            Board3Sides.AddSide( 0, 0, BoxSide.Left, thePlayer );
+            Board3Sides.ClaimSide( 0, 0, BoxSide.Top, thePlayer );
+            Board3Sides.ClaimSide( 0, 0, BoxSide.Bottom, thePlayer );
+            Board3Sides.ClaimSide( 0, 0, BoxSide.Left, thePlayer );
 
-            Board4Sides.AddSide( 0, 0, BoxSide.Top, thePlayer );
-            Board4Sides.AddSide( 0, 0, BoxSide.Bottom, thePlayer );
-            Board4Sides.AddSide( 0, 0, BoxSide.Left, thePlayer );
-            Board4Sides.AddSide( 0, 0, BoxSide.Right, thePlayer );
+            Board4Sides.ClaimSide( 0, 0, BoxSide.Top, thePlayer );
+            Board4Sides.ClaimSide( 0, 0, BoxSide.Bottom, thePlayer );
+            Board4Sides.ClaimSide( 0, 0, BoxSide.Left, thePlayer );
+            Board4Sides.ClaimSide( 0, 0, BoxSide.Right, thePlayer );
 
             // Assert
             Assert.IsFalse( Board0Sides.GameOver(), "Board game over 0 sides not correct" );
