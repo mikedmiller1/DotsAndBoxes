@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace UI_2
+namespace DotsAndBoxes
 {
-    public partial class Form1 : Form
+    public partial class MainWindow : Form
     {
         Graphics drawArea;
         Pen myPen = new Pen(Color.Black);
@@ -25,28 +25,35 @@ namespace UI_2
         int mouseUpPointX = 0;
         int mouseUpPointY = 0;
         List<Point> points = new List<Point>();
-        public Form1()
+
+
+
+        public MainWindow()
         {
             InitializeComponent();
             panelSizeX = panel2.Size.Width;
             panelSizeY = panel2.Size.Height;
             panelStartX = panel2.Location.X;
             panelStartY = panel2.Location.Y;
-            
+
             drawArea = panel2.CreateGraphics();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
 
+
+        private void MainWindow_Load( object sender, EventArgs e )
+        {
         }
 
-        private void panel2_Paint(object sender, PaintEventArgs e)
-        {
 
+
+        private void panel2_Paint( object sender, PaintEventArgs e )
+        {
         }
 
-        private void button1_Click(object sender, EventArgs e)
+
+
+        private void DrawButton_Click( object sender, EventArgs e )
         {
             int rows = Int32.Parse(textBox1.Text); // get rows from user
             int cols = Int32.Parse(textBox2.Text);
@@ -54,11 +61,12 @@ namespace UI_2
             incrementsY = (panelSizeY - panelStartY) / cols;
 
             panel2.Refresh();
-            drawIt(rows,cols);
-
+            drawIt( rows, cols );
         }
 
-        private void drawIt(int rows,int cols)
+
+
+        private void drawIt( int rows, int cols )
         {
             int k = 0;
             int l = 0;
@@ -66,48 +74,53 @@ namespace UI_2
             {
                 for (int j = 0; j < cols; j++)
                 {
-                    drawArea.DrawRectangle(myPen, k, l, 5, 5);
-                   k= k + incrementsX;
-                    
+                    drawArea.DrawRectangle( myPen, k, l, 5, 5 );
+                    k = k + incrementsX;
+
                 }
                 l = l + incrementsY;
                 k = 0;
             }
         }
 
-        private void panel2_MouseDown(object sender, MouseEventArgs e)
+
+
+        private void panel2_MouseDown( object sender, MouseEventArgs e )
         {
             mouseDownPointX = e.X;
             mouseDownPointY = e.Y;
-
         }
 
-        private void panel2_MouseMove(object sender, MouseEventArgs e)
+
+
+        private void panel2_MouseMove( object sender, MouseEventArgs e )
         {
-            
         }
 
-        private void panel2_MouseUp(object sender, MouseEventArgs e)
+
+
+        private void panel2_MouseUp( object sender, MouseEventArgs e )
         {
             mouseUpPointX = e.X;
             mouseUpPointY = e.Y;
-            drawLine(mouseDownPointX, mouseDownPointY, mouseUpPointX, mouseUpPointY);
+            drawLine( mouseDownPointX, mouseDownPointY, mouseUpPointX, mouseUpPointY );
         }
 
-        private void drawLine(int downX,int downY, int upX, int upY)
+
+
+        private void drawLine( int downX, int downY, int upX, int upY )
         {
-            downX = (int)Math.Floor((double)downX);
-            downY = (int)Math.Floor((double)downY);
-            upX = (int)Math.Floor((double)upX);
-            upY = (int)Math.Floor((double)upY);
+            downX = (int)Math.Floor( (double)downX );
+            downY = (int)Math.Floor( (double)downY );
+            upX = (int)Math.Floor( (double)upX );
+            upY = (int)Math.Floor( (double)upY );
 
             Point pointStart = new Point(downX, downY);
             Point pointFinish = new Point(upX, upY);
-            
-            points.Add(pointStart);  //save points
-            points.Add(pointFinish); //save points
-            drawArea.DrawLine(myPen, pointStart, pointFinish);
-            
+
+            points.Add( pointStart );  //save points
+            points.Add( pointFinish ); //save points
+            drawArea.DrawLine( myPen, pointStart, pointFinish );
         }
 
     }

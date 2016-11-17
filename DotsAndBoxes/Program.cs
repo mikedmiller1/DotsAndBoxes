@@ -15,13 +15,13 @@ namespace DotsAndBoxes
         static void Main()
         {
             // Test the game
-            GameTest.Test();
+            //GameTest.Test();
 
 
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault( false );
-            Application.Run( new Form1() );            
+            Application.Run( new MainWindow() );            
         }
     }
 }
