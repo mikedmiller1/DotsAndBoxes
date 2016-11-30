@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace DotsAndBoxes
 {
@@ -28,7 +29,8 @@ namespace DotsAndBoxes
                 if (Turn == Player.Player1)
                 {
                     // Take the turn
-                    TheBoard = Player1.TakeTurn( TheBoard );
+                    List<Side> TheSides = new List<Side>();
+                    TheBoard = Player1.TakeTurn( TheBoard, out TheSides );
 
                     // Set the turn flag to player 2
                     Turn = Player.Player2;
@@ -39,7 +41,8 @@ namespace DotsAndBoxes
                 else
                 {
                     // Take the turn
-                    TheBoard = Player2.TakeTurn( TheBoard );
+                    List<Side> TheSides = new List<Side>();
+                    TheBoard = Player2.TakeTurn( TheBoard, out TheSides );
 
                     // Set the turn flag to player 1
                     Turn = Player.Player1;

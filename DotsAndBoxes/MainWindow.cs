@@ -28,7 +28,6 @@ namespace DotsAndBoxes
         int mouseDownPointY = 0;
         int mouseUpPointX = 0;
         int mouseUpPointY = 0;
-        List<Point> DrawnPoints = new List<Point>();
 
         Board TheBoard;
         Solver Player1 = new Solver( Player.Player1, Skill.Beginner );
@@ -60,13 +59,15 @@ namespace DotsAndBoxes
         /// <param name="e"></param>
         private void DrawButton_Click( object sender, EventArgs e )
         {
-            int rows = Int32.Parse(textBox1.Text) + 1; // get rows from user
+            // Get the rows and columns
+            int rows = Int32.Parse(textBox1.Text) + 1;
             int cols = Int32.Parse(textBox2.Text) + 1;
             ColIncrement = (panelSizeX - panelStartX) / rows;
             RowIncrement = (panelSizeY - panelStartY) / cols;
 
+            // Draw the dots
             panel2.Refresh();
-            drawIt( rows, cols );
+            DrawDots( rows, cols );
 
 
             // Create a new board
@@ -78,9 +79,9 @@ namespace DotsAndBoxes
         /// <summary>
         /// Draws the dots
         /// </summary>
-        /// <param name="Rows"></param>
-        /// <param name="Cols"></param>
-        private void drawIt( int Rows, int Cols )
+        /// <param name="Rows">Number of rows of dots</param>
+        /// <param name="Cols">Number of columns of dots</param>
+        private void DrawDots( int Rows, int Cols )
         {
             // Define the starting position of the dot grid
             int ColPosition = ColStart;
@@ -132,7 +133,7 @@ namespace DotsAndBoxes
         {
             mouseUpPointX = e.X;
             mouseUpPointY = e.Y;
-            drawLine( mouseDownPointX, mouseDownPointY, mouseUpPointX, mouseUpPointY );
+            HumanMove( mouseDownPointX, mouseDownPointY, mouseUpPointX, mouseUpPointY );
         }
 
 
@@ -144,7 +145,7 @@ namespace DotsAndBoxes
         /// <param name="downY"></param>
         /// <param name="upX"></param>
         /// <param name="upY"></param>
-        private void drawLine( int downX, int downY, int upX, int upY )
+        private void HumanMove( int downX, int downY, int upX, int upY )
         {
             // Get the start and end coordinates
             downX = (int)Math.Floor( (double)downX );
@@ -163,29 +164,91 @@ namespace DotsAndBoxes
             // Check if the side is valid and available
             if (TheSide.BoxSide != BoxSide.Invalid && TheBoard.IsSideFree( TheSide ))
             {
-                // Save the points
-                DrawnPoints.Add( pointStart );
-                DrawnPoints.Add( pointFinish );
-
                 // Add the side to the board
                 TheBoard.ClaimSide( TheSide, CurrentPlayer );
 
+                // Draw the line
+                drawArea.DrawLine( PenPlayer1, pointStart, pointFinish );
 
-                // Draw the line and switch the current player
-                if (CurrentPlayer == Player.Player1)
-                {
-                    drawArea.DrawLine( PenPlayer1, pointStart, pointFinish );
-                    CurrentPlayer = Player.Player2;
-                }
-                else
-                {
-                    // Take the turn
-                    //TheBoard = Player2.TakeTurn( TheBoard );
+                // Switch the current player
+                CurrentPlayer = Player.Player2;
 
-                    drawArea.DrawLine( PenPlayer2, pointStart, pointFinish );
-                    CurrentPlayer = Player.Player1;
-                }
+                // Let the computer take a turn
+                ComputerMove();
             }
+        }
+
+
+
+        /// <summary>
+        /// Lets the computer take a turn
+        /// </summary>
+        private void ComputerMove()
+        {
+            // Initialize the sides list
+            List<Side> TheSides = new List<Side>();
+
+            // Take the turn
+            TheBoard = Player2.TakeTurn( TheBoard, out TheSides );
+
+
+            // Loop through the sides to draw
+            foreach (Side CurrentSide in TheSides)
+            {
+                // Initialize the start and end variables
+                int StartX = 0;
+                int StartY = 0;
+                int EndX = 0;
+                int EndY = 0;
+
+
+                // Get the start and end points of the line to draw
+                switch ( CurrentSide.BoxSide )
+                {
+                    case BoxSide.Top:
+                        StartX = ColStart + DotSize / 2 + CurrentSide.Column * ColIncrement;
+                        StartY = RowStart + DotSize / 2 + CurrentSide.Row * RowIncrement;
+                        EndX   = ColStart + DotSize / 2 + (CurrentSide.Column + 1) * ColIncrement;
+                        EndY   = RowStart + DotSize / 2 + CurrentSide.Row * RowIncrement;
+                        break;
+
+
+                    case BoxSide.Bottom:
+                        StartX = ColStart + DotSize / 2 + CurrentSide.Column * ColIncrement;
+                        StartY = RowStart + DotSize / 2 + (CurrentSide.Row + 1) * RowIncrement;
+                        EndX   = ColStart + DotSize / 2 + (CurrentSide.Column + 1) * ColIncrement;
+                        EndY   = RowStart + DotSize / 2 + (CurrentSide.Row + 1) * RowIncrement;
+                        break;
+
+
+                    case BoxSide.Left:
+                        StartX = ColStart + DotSize / 2 + CurrentSide.Column * ColIncrement;
+                        StartY = RowStart + DotSize / 2 + CurrentSide.Row * RowIncrement;
+                        EndX   = ColStart + DotSize / 2 + CurrentSide.Column * ColIncrement;
+                        EndY   = RowStart + DotSize / 2 + (CurrentSide.Row + 1) * RowIncrement;
+                        break;
+
+
+                    case BoxSide.Right:
+                        StartX = ColStart + DotSize / 2 + (CurrentSide.Column + 1) * ColIncrement;
+                        StartY = RowStart + DotSize / 2 + CurrentSide.Row * RowIncrement;
+                        EndX   = ColStart + DotSize / 2 + (CurrentSide.Column + 1) * ColIncrement;
+                        EndY   = RowStart + DotSize / 2 + (CurrentSide.Row + 1) * RowIncrement;
+                        break;
+                }
+                
+
+                // Get the start and end coordinates as drawing points
+                Point pointStart = new Point( StartX, StartY );
+                Point pointFinish = new Point( EndX, EndY );
+
+                // Draw the line
+                drawArea.DrawLine( PenPlayer2, pointStart, pointFinish );
+            }
+
+
+            // Switch the current player
+            CurrentPlayer = Player.Player1;
         }
 
 
@@ -293,8 +356,6 @@ namespace DotsAndBoxes
             // Return the point
             return theDot;
         }
-
-
 
     }
 }

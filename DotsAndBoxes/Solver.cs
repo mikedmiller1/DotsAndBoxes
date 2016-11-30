@@ -47,8 +47,11 @@ namespace DotsAndBoxes
         /// </summary>
         /// <param name="theBoard">The board to play the turn</param>
         /// <returns>The board after playing this turn</returns>
-        public Board TakeTurn( Board theBoard )
+        public Board TakeTurn( Board theBoard, out List<Side> theSides )
         {
+            // Initialize the sides list
+            theSides = new List<Side>();
+
             // Initialize the completed box flag
             bool CompletedBox = false;
 
@@ -64,8 +67,12 @@ namespace DotsAndBoxes
 
 
                 // Run Minimax on the current board
-                NewBoard = MiniMax( theBoard, SearchDepth );
+                Side theSide;
+                NewBoard = MiniMax( theBoard, SearchDepth, out theSide );
 
+
+                // Add the side to the list
+                theSides.Add( theSide );
 
                 // If the player completed a box
                 if( NewBoard.GetScore( PlayerID ) > theBoard.GetScore( PlayerID ) )
@@ -89,18 +96,22 @@ namespace DotsAndBoxes
 
 
 
-        private Board MiniMax( Board theBoard, int theDepth )
+        private Board MiniMax( Board theBoard, int theDepth, out Side theSide )
         {
             // If the depth is less than 0, we have reached the depth limit
             if( theDepth < 0 )
             {
                 // Return the board
+                // ***** FOR DEVELOPMENT ONLY *****
+                // ***** WILL GET THE SIDE RECURSIVELY *****
+                theSide = new Side( 0, 0, BoxSide.Invalid );
                 return theBoard;
             }
 
 
             // Create a copy of the board
             Board NewBoard = new Board( theBoard );
+
 
 
 
@@ -118,8 +129,12 @@ namespace DotsAndBoxes
             // Get the first free side
             Side FirstSide = FreeSides[ 0 ];
 
+            // Use the side
+            theSide = FirstSide;
+
             // Add it to the board
-            NewBoard.ClaimSide( RandomSide, PlayerID );
+            NewBoard.ClaimSide( theSide, PlayerID );
+
 
 
 
