@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Board.cs" />
     <Compile Include="Box.cs" />
+    <Compile Include="Dot.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>

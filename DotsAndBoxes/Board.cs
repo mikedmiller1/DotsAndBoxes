@@ -182,6 +182,38 @@ namespace DotsAndBoxes
 
 
         /// <summary>
+        /// Returns a boolean indicating if the specified side is free
+        /// </summary>
+        /// <param name="theSide">The Side to check</param>
+        /// <returns>True if the side is free</returns>
+        public bool IsSideFree( Side theSide )
+        {
+            // Initialize the free flag
+            bool IsFree = false;
+
+
+            // Get the list of free sides
+            List<Side> FreeSides = GetFreeSides();
+
+            // Loop through the free sides
+            foreach (Side CurrentSide in FreeSides)
+            {
+                // If the current side matches the input side
+                if (theSide.Equals( CurrentSide ))
+                {
+                    // The side is not free
+                    IsFree = true;
+                }
+            }
+
+
+            // Return the free flag
+            return IsFree;
+        }
+
+
+
+        /// <summary>
         /// Returns the box at the specified index
         /// </summary>
         /// <param name="RowNum"></param>

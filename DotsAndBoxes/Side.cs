@@ -39,5 +39,26 @@
 
 
 
+        /// <summary>
+        /// Returns a boolean indicating if the specified side is equal to this side
+        /// </summary>
+        /// <param name="theOtherSide">The side to compare to</param>
+        /// <returns>True if the sides are equal</returns>
+        public bool Equals( Side theOtherSide )
+        {
+            // Initialize the equal flag
+            bool IsEqual = false;
+
+
+            // If the row, column and side are equal
+            if( Row == theOtherSide.Row && Column == theOtherSide.Column && BoxSide == theOtherSide.BoxSide )
+            {
+                IsEqual = true;
+            }
+
+
+            // Return the equal flag
+            return IsEqual;
+        }
     }
 }
