@@ -167,8 +167,13 @@ namespace DotsAndBoxes
                 // Add the side to the board
                 TheBoard.ClaimSide( TheSide, CurrentPlayer );
 
+                // Get the line endpoints
+                Point StartPoint;
+                Point EndPoint;
+                GetPointsFromSide( TheSide, out StartPoint, out EndPoint );
+
                 // Draw the line
-                drawArea.DrawLine( PenPlayer1, pointStart, pointFinish );
+                drawArea.DrawLine( PenPlayer1, StartPoint, EndPoint );
 
                 // Switch the current player
                 CurrentPlayer = Player.Player2;
@@ -195,60 +200,76 @@ namespace DotsAndBoxes
             // Loop through the sides to draw
             foreach (Side CurrentSide in TheSides)
             {
-                // Initialize the start and end variables
-                int StartX = 0;
-                int StartY = 0;
-                int EndX = 0;
-                int EndY = 0;
-
-
-                // Get the start and end points of the line to draw
-                switch ( CurrentSide.BoxSide )
-                {
-                    case BoxSide.Top:
-                        StartX = ColStart + DotSize / 2 + CurrentSide.Column * ColIncrement;
-                        StartY = RowStart + DotSize / 2 + CurrentSide.Row * RowIncrement;
-                        EndX   = ColStart + DotSize / 2 + (CurrentSide.Column + 1) * ColIncrement;
-                        EndY   = RowStart + DotSize / 2 + CurrentSide.Row * RowIncrement;
-                        break;
-
-
-                    case BoxSide.Bottom:
-                        StartX = ColStart + DotSize / 2 + CurrentSide.Column * ColIncrement;
-                        StartY = RowStart + DotSize / 2 + (CurrentSide.Row + 1) * RowIncrement;
-                        EndX   = ColStart + DotSize / 2 + (CurrentSide.Column + 1) * ColIncrement;
-                        EndY   = RowStart + DotSize / 2 + (CurrentSide.Row + 1) * RowIncrement;
-                        break;
-
-
-                    case BoxSide.Left:
-                        StartX = ColStart + DotSize / 2 + CurrentSide.Column * ColIncrement;
-                        StartY = RowStart + DotSize / 2 + CurrentSide.Row * RowIncrement;
-                        EndX   = ColStart + DotSize / 2 + CurrentSide.Column * ColIncrement;
-                        EndY   = RowStart + DotSize / 2 + (CurrentSide.Row + 1) * RowIncrement;
-                        break;
-
-
-                    case BoxSide.Right:
-                        StartX = ColStart + DotSize / 2 + (CurrentSide.Column + 1) * ColIncrement;
-                        StartY = RowStart + DotSize / 2 + CurrentSide.Row * RowIncrement;
-                        EndX   = ColStart + DotSize / 2 + (CurrentSide.Column + 1) * ColIncrement;
-                        EndY   = RowStart + DotSize / 2 + (CurrentSide.Row + 1) * RowIncrement;
-                        break;
-                }
-                
-
-                // Get the start and end coordinates as drawing points
-                Point pointStart = new Point( StartX, StartY );
-                Point pointFinish = new Point( EndX, EndY );
+                // Get the line endpoints
+                Point StartPoint;
+                Point EndPoint;
+                GetPointsFromSide( CurrentSide, out StartPoint, out EndPoint );
 
                 // Draw the line
-                drawArea.DrawLine( PenPlayer2, pointStart, pointFinish );
+                drawArea.DrawLine( PenPlayer2, StartPoint, EndPoint );
             }
 
 
             // Switch the current player
             CurrentPlayer = Player.Player1;
+        }
+
+
+
+        /// <summary>
+        /// Returns the start and end points based on a Side
+        /// </summary>
+        /// <param name="theSide">The Side to get the start and ends points for</param>
+        /// <param name="StartPoint">The starting Point of the line</param>
+        /// <param name="EndPoint">The ending Point of the line</param>
+        private void GetPointsFromSide( Side theSide, out Point StartPoint, out Point EndPoint )
+        {
+            // Initialize the start and end variables
+            int StartX = 0;
+            int StartY = 0;
+            int EndX = 0;
+            int EndY = 0;
+
+
+            // Get the start and end points of the line to draw
+            switch (theSide.BoxSide)
+            {
+                case BoxSide.Top:
+                    StartX = ColStart + DotSize / 2 + theSide.Column * ColIncrement;
+                    StartY = RowStart + DotSize / 2 + theSide.Row * RowIncrement;
+                    EndX = ColStart + DotSize / 2 + (theSide.Column + 1) * ColIncrement;
+                    EndY = RowStart + DotSize / 2 + theSide.Row * RowIncrement;
+                    break;
+
+
+                case BoxSide.Bottom:
+                    StartX = ColStart + DotSize / 2 + theSide.Column * ColIncrement;
+                    StartY = RowStart + DotSize / 2 + (theSide.Row + 1) * RowIncrement;
+                    EndX = ColStart + DotSize / 2 + (theSide.Column + 1) * ColIncrement;
+                    EndY = RowStart + DotSize / 2 + (theSide.Row + 1) * RowIncrement;
+                    break;
+
+
+                case BoxSide.Left:
+                    StartX = ColStart + DotSize / 2 + theSide.Column * ColIncrement;
+                    StartY = RowStart + DotSize / 2 + theSide.Row * RowIncrement;
+                    EndX = ColStart + DotSize / 2 + theSide.Column * ColIncrement;
+                    EndY = RowStart + DotSize / 2 + (theSide.Row + 1) * RowIncrement;
+                    break;
+
+
+                case BoxSide.Right:
+                    StartX = ColStart + DotSize / 2 + (theSide.Column + 1) * ColIncrement;
+                    StartY = RowStart + DotSize / 2 + theSide.Row * RowIncrement;
+                    EndX = ColStart + DotSize / 2 + (theSide.Column + 1) * ColIncrement;
+                    EndY = RowStart + DotSize / 2 + (theSide.Row + 1) * RowIncrement;
+                    break;
+            }
+
+
+            // Get the start and end coordinates as drawing points
+            StartPoint = new Point( StartX, StartY );
+            EndPoint = new Point( EndX, EndY );
         }
 
 
