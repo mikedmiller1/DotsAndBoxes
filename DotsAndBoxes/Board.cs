@@ -50,17 +50,6 @@ namespace DotsAndBoxes
         public Board( Board theBoard )
             : this( theBoard.NumRows, theBoard.NumCols )
         {
-            //// Get all the sides of the board to copy
-            //List<Side> AllSides = theBoard.GetAllSides();
-
-            //// Loop through the sides
-            //foreach( Side CurrentSide in AllSides )
-            //{
-            //    // Add the side to the board
-            //    ClaimSide( CurrentSide, CurrentSide.Owner );
-            //}
-
-
             // Loop through the rows
             for (int RowNum = 0; RowNum < NumRows; RowNum++)
             {
