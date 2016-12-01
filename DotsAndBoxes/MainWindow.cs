@@ -164,8 +164,12 @@ namespace DotsAndBoxes
             // Check if the side is valid and available
             if (TheSide.BoxSide != BoxSide.Invalid && TheBoard.IsSideFree( TheSide ))
             {
+                // Initialize the new board
+                Board NewBoard = new Board( TheBoard );
+
                 // Add the side to the board
-                TheBoard.ClaimSide( TheSide, CurrentPlayer );
+                NewBoard.ClaimSide( TheSide, CurrentPlayer );
+
 
                 // Get the line endpoints
                 Point StartPoint;
@@ -175,11 +179,42 @@ namespace DotsAndBoxes
                 // Draw the line
                 drawArea.DrawLine( PenPlayer1, StartPoint, EndPoint );
 
-                // Switch the current player
-                CurrentPlayer = Player.Player2;
 
-                // Let the computer take a turn
-                ComputerMove();
+                // If the player did not complete a box
+                if (NewBoard.GetScore( Player.Player1 ) == TheBoard.GetScore( Player.Player1 ))
+                {
+                    // Use the new board
+                    TheBoard = NewBoard;
+
+
+                    // Check if the game is over
+                    if (TheBoard.GameOver())
+                    {
+                        GameOver();
+                    }
+
+
+                    // Switch the current player
+                    CurrentPlayer = Player.Player2;
+
+                    // Let the computer take a turn
+                    ComputerMove();
+                }
+
+
+                // Otherwise, the player completed a box
+                else
+                {
+                    // Use the new board
+                    TheBoard = NewBoard;
+                }
+                
+
+                // Check if the game is over
+                if( TheBoard.GameOver() )
+                {
+                    GameOver();
+                }
             }
         }
 
@@ -212,6 +247,13 @@ namespace DotsAndBoxes
 
             // Switch the current player
             CurrentPlayer = Player.Player1;
+
+
+            // Check if the game is over
+            if (TheBoard.GameOver())
+            {
+                GameOver();
+            }
         }
 
 
@@ -378,5 +420,19 @@ namespace DotsAndBoxes
             return theDot;
         }
 
+
+
+        /// <summary>
+        /// Called when the game is over
+        /// </summary>
+        private void GameOver()
+        {
+            // Get the scores
+            int Player1Score = TheBoard.GetScore( Player.Player1 );
+            int Player2Score = TheBoard.GetScore( Player.Player2 );
+
+            // Display the result
+            MessageBox.Show( "Game Over!  Human: " + Player1Score.ToString() + ", Computer: " + Player2Score.ToString() );
+        }
     }
 }

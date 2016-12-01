@@ -49,6 +49,28 @@
 
 
         /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="theBox">The Box to duplicate</param>
+        public Box( Box theBox )
+        {
+            // Assign the rows and columns
+            Row    = theBox.Row;
+            Column = theBox.Column;
+
+            // Duplicate the sides
+            Top    = new Side( theBox.Top );
+            Bottom = new Side( theBox.Bottom );
+            Left   = new Side( theBox.Left );
+            Right  = new Side( theBox.Right );
+
+            // Assign the owner
+            Owner  = theBox.Owner;
+        }
+
+
+
+        /// <summary>
         /// Adds a side to the box
         /// </summary>
         /// <param name="theSide"></param>

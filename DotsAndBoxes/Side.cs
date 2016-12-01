@@ -40,6 +40,19 @@
 
 
         /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="theSide">the Side to duplicate</param>
+        public Side( Side theSide )
+            : this( theSide.Row, theSide.Column, theSide.BoxSide )
+        {
+            // Assign the owner
+            Owner = theSide.Owner;
+        }
+
+
+
+        /// <summary>
         /// Returns a boolean indicating if the specified side is equal to this side
         /// </summary>
         /// <param name="theOtherSide">The side to compare to</param>
