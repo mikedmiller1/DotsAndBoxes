@@ -13,7 +13,7 @@ namespace DotsAndBoxes
         public readonly Player PlayerID;
         public readonly Skill SkillLevel;
         public static Random R = new Random();
-
+        
         private readonly int SearchDepth;
 
 
@@ -79,7 +79,7 @@ namespace DotsAndBoxes
                 {
                     // Set the flag to true to take another turn
                     CompletedBox = true;
-
+                    
                     // Make the new board the current board
                     theBoard = NewBoard;
                 }

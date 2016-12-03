@@ -28,13 +28,18 @@ namespace DotsAndBoxes
         int mouseDownPointY = 0;
         int mouseUpPointX = 0;
         int mouseUpPointY = 0;
-
+        int RowPosition = 0;
+        int ColPosition = 0;
+        int drawRows = 0;
+        int drawCols = 0;
+        int humanScore = 0;
         Board TheBoard;
         Solver Player1 = new Solver( Player.Player1, Skill.Beginner );
         Solver Player2 = new Solver( Player.Player2, Skill.Expert );
         Player CurrentPlayer = Player.Player1;
 
-
+        List<PointsData> ComputerPlayerList = new List<PointsData>();
+        List<PointsData> HumanPlayerList = new List<PointsData>();
 
         /// <summary>
         /// Constructor
@@ -59,19 +64,26 @@ namespace DotsAndBoxes
         /// <param name="e"></param>
         private void DrawButton_Click( object sender, EventArgs e )
         {
+            
+            ComputerPlayerList.Clear();
+            HumanPlayerList.Clear();
+            panel2.Controls.Clear(); //to remove all controls
+            label3.Text = Convert.ToString(0);
+            panel2.Refresh();
             // Get the rows and columns
-            int rows = Int32.Parse(textBox1.Text) + 1;
-            int cols = Int32.Parse(textBox2.Text) + 1;
+            int rows = Int32.Parse(textBox1.Text);
+            int cols = Int32.Parse(textBox2.Text);
             ColIncrement = (panelSizeX - panelStartX) / rows;
             RowIncrement = (panelSizeY - panelStartY) / cols;
-
+            
             // Draw the dots
-            panel2.Refresh();
+
             DrawDots( rows, cols );
 
 
             // Create a new board
             TheBoard = new Board( rows - 1, cols - 1 );
+            
         }
 
 
@@ -84,29 +96,31 @@ namespace DotsAndBoxes
         private void DrawDots( int Rows, int Cols )
         {
             // Define the starting position of the dot grid
-            int ColPosition = ColStart;
-            int RowPosition = RowStart;
+             ColPosition = ColStart;
+             RowPosition = RowStart;
+            drawRows = Rows;
+            drawCols = Cols;
 
             // Loop through the rows
-            for (int RowNum = 0; RowNum < Rows; RowNum++)
-            {
-                // Loop through the columns
-                for (int ColNum = 0; ColNum < Cols; ColNum++)
-                {
-                    // Draw the dot
-                    drawArea.DrawRectangle( PenBlack, ColPosition, RowPosition, DotSize, DotSize );
+            //for (int RowNum = 0; RowNum < Rows; RowNum++)
+            //{
+            //    // Loop through the columns
+            //    for (int ColNum = 0; ColNum < Cols; ColNum++)
+            //    {
+            //        // Draw the dot
+            //        drawArea.DrawRectangle( PenBlack, ColPosition, RowPosition, DotSize, DotSize );
 
-                    // Store it in the dot grid list
-                    DotGrid.Add( new Dot( new Point( ColPosition, RowPosition ), RowNum, ColNum ) );
+            //        // Store it in the dot grid list
+            //        DotGrid.Add( new Dot( new Point( ColPosition, RowPosition ), RowNum, ColNum ) );
 
-                    // Increment the column position
-                    ColPosition = ColPosition + ColIncrement;
-                }
+            //        // Increment the column position
+            //        ColPosition = ColPosition + ColIncrement;
+            //    }
 
-                // Increment the row position and reset the column position
-                RowPosition = RowPosition + RowIncrement;
-                ColPosition = ColStart;
-            }
+            //    // Increment the row position and reset the column position
+            //    RowPosition = RowPosition + RowIncrement;
+            //    ColPosition = ColStart;
+            //}
         }
 
 
@@ -174,8 +188,8 @@ namespace DotsAndBoxes
                 // Get the line endpoints
                 Point StartPoint;
                 Point EndPoint;
-                GetPointsFromSide( TheSide, out StartPoint, out EndPoint );
-
+                GetPointsFromSide( TheSide, out StartPoint, out EndPoint);
+                HumanPlayerList.Add(new PointsData(StartPoint, EndPoint));
                 // Draw the line
                 drawArea.DrawLine( PenPlayer1, StartPoint, EndPoint );
 
@@ -201,14 +215,23 @@ namespace DotsAndBoxes
                     ComputerMove();
                 }
 
-
+                
                 // Otherwise, the player completed a box
                 else
-                {
+                {   
                     // Use the new board
                     TheBoard = NewBoard;
+                    // add a blue marker for human player
+                    Label myLabel = new Label();
+                    
+                    myLabel.Location = new Point(StartPoint.X,StartPoint.Y);
+                    myLabel.BackColor = Color.Blue;
+                    myLabel.AutoSize = true;
+                    myLabel.Refresh();
+                    myLabel.Text = "Player1";
+                    panel2.Controls.Add(myLabel);
+                    label4.Text = TheBoard.GetScore(Player.Player1).ToString();
                 }
-                
 
                 // Check if the game is over
                 if( TheBoard.GameOver() )
@@ -230,8 +253,7 @@ namespace DotsAndBoxes
 
             // Take the turn
             TheBoard = Player2.TakeTurn( TheBoard, out TheSides );
-
-
+            
             // Loop through the sides to draw
             foreach (Side CurrentSide in TheSides)
             {
@@ -239,12 +261,16 @@ namespace DotsAndBoxes
                 Point StartPoint;
                 Point EndPoint;
                 GetPointsFromSide( CurrentSide, out StartPoint, out EndPoint );
-
+                //Store the points
+                PointsData point = new PointsData(StartPoint, EndPoint);
+                ComputerPlayerList.Add(point);
                 // Draw the line
                 drawArea.DrawLine( PenPlayer2, StartPoint, EndPoint );
+                
+               
             }
 
-
+            label3.Text = TheBoard.GetScore(Player.Player2).ToString();
             // Switch the current player
             CurrentPlayer = Player.Player1;
 
@@ -434,5 +460,79 @@ namespace DotsAndBoxes
             // Display the result
             MessageBox.Show( "Game Over!  Human: " + Player1Score.ToString() + ", Computer: " + Player2Score.ToString() );
         }
+
+        
+        /// <summary>
+        /// Drwa the board and all lines made by human and computer, must draw all lines in this
+        /// paint method to maintain board graphics when minimizing
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+            // draw board here, so that it will stay when minimized
+            for (int RowNum = 0; RowNum < drawRows; RowNum++)
+            {
+                // Loop through the columns
+                for (int ColNum = 0; ColNum < drawCols; ColNum++)
+                {
+                    // Draw the dot
+                    drawArea.DrawRectangle(PenBlack, ColPosition, RowPosition, DotSize, DotSize);
+
+                    // Store it in the dot grid list
+                    DotGrid.Add(new Dot(new Point(ColPosition, RowPosition), RowNum, ColNum));
+
+                    // Increment the column position
+                    ColPosition = ColPosition + ColIncrement;
+                }
+
+
+                // Increment the row position and reset the column position
+                RowPosition = RowPosition + RowIncrement;
+                ColPosition = ColStart;
+
+            }
+            // drwaing the lines here keeps them from erasing when minimizing windows
+            foreach( PointsData t in ComputerPlayerList)
+            {
+                e.Graphics.DrawLine(PenPlayer2, t.StartPoint, t.EndPoint);
+            }
+
+            foreach (PointsData t in HumanPlayerList)
+            {
+                e.Graphics.DrawLine(PenPlayer1, t.StartPoint, t.EndPoint);
+            }
+
+            
+        }// end of method
+        
+        private void label4_Click(object sender, EventArgs e)
+        {
+            label4.Text = TheBoard.GetScore(Player.Player1).ToString();
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+            label3.Text = TheBoard.GetScore(Player.Player2).ToString();
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+    } // end of class
+
+    public partial class PointsData
+    {
+        public Point StartPoint;
+        public Point EndPoint;
+        public PointsData(Point start, Point end)
+        {
+            StartPoint = start;
+            EndPoint = end;
+        }
     }
+
 }
+
