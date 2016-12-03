@@ -47,46 +47,10 @@ namespace DotsAndBoxes
         /// </summary>
         /// <param name="theBoard">The board to play the turn</param>
         /// <returns>The board after playing this turn</returns>
-        public Board TakeTurn( Board theBoard, out List<Side> theSides )
+        public Board TakeTurn( Board theBoard, out Side theSide )
         {
-            // Initialize the sides list
-            theSides = new List<Side>();
-
-            // Initialize the completed box flag
-            bool CompletedBox = false;
-
-            // Initialize the new board
-            Board NewBoard;
-
-
-            // Take a turn
-            do
-            {
-                // Clear the completed box flag
-                CompletedBox = false;
-
-
-                // Run Minimax on the current board
-                Side theSide;
-                NewBoard = MiniMax( theBoard, SearchDepth, out theSide );
-
-
-                // Add the side to the list
-                theSides.Add( theSide );
-
-                // If the player completed a box
-                if( NewBoard.GetScore( PlayerID ) > theBoard.GetScore( PlayerID ) )
-                {
-                    // Set the flag to true to take another turn
-                    CompletedBox = true;
-                    
-                    // Make the new board the current board
-                    theBoard = NewBoard;
-                }
-            }
-            // Continue taking a turn as long as long as a box was completed
-            while( CompletedBox && !theBoard.GameOver() );
-
+            // Run Minimax on the current board
+            Board NewBoard = MiniMax( theBoard, SearchDepth, out theSide );
 
             // Return the board
             return NewBoard;
@@ -140,11 +104,8 @@ namespace DotsAndBoxes
 
             // Return the new board
             return NewBoard;
-        }
 
-
-
-        
+        } // MiniMax
 
 
     } // Solver class

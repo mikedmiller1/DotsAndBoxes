@@ -22,32 +22,32 @@ namespace DotsAndBoxes
             Player Turn = Player.Player1;
 
 
-            // Loop until the game is finished
-            while (!TheBoard.GameOver())
-            {
-                // Player 1
-                if (Turn == Player.Player1)
-                {
-                    // Take the turn
-                    List<Side> TheSides = new List<Side>();
-                    TheBoard = Player1.TakeTurn( TheBoard, out TheSides );
+            //// Loop until the game is finished
+            //while (!TheBoard.GameOver())
+            //{
+            //    // Player 1
+            //    if (Turn == Player.Player1)
+            //    {
+            //        // Take the turn
+            //        List<Side> TheSides = new List<Side>();
+            //        TheBoard = Player1.TakeTurn( TheBoard, out TheSides );
 
-                    // Set the turn flag to player 2
-                    Turn = Player.Player2;
-                }
+            //        // Set the turn flag to player 2
+            //        Turn = Player.Player2;
+            //    }
 
 
-                // Player 2
-                else
-                {
-                    // Take the turn
-                    List<Side> TheSides = new List<Side>();
-                    TheBoard = Player2.TakeTurn( TheBoard, out TheSides );
+            //    // Player 2
+            //    else
+            //    {
+            //        // Take the turn
+            //        List<Side> TheSides = new List<Side>();
+            //        TheBoard = Player2.TakeTurn( TheBoard, out TheSides );
 
-                    // Set the turn flag to player 1
-                    Turn = Player.Player1;
-                }
-            }
+            //        // Set the turn flag to player 1
+            //        Turn = Player.Player1;
+            //    }
+            //}
 
 
             // Get the scores

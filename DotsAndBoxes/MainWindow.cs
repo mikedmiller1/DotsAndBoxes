@@ -77,7 +77,6 @@ namespace DotsAndBoxes
             RowIncrement = (panelSizeY - panelStartY) / cols;
             
             // Draw the dots
-
             DrawDots( rows, cols );
 
 
@@ -223,7 +222,6 @@ namespace DotsAndBoxes
                     TheBoard = NewBoard;
                     // add a blue marker for human player
                     Label myLabel = new Label();
-                    
                     myLabel.Location = new Point(StartPoint.X,StartPoint.Y);
                     myLabel.BackColor = Color.Blue;
                     myLabel.AutoSize = true;
@@ -251,26 +249,69 @@ namespace DotsAndBoxes
             // Initialize the sides list
             List<Side> TheSides = new List<Side>();
 
-            // Take the turn
-            TheBoard = Player2.TakeTurn( TheBoard, out TheSides );
-            
-            // Loop through the sides to draw
-            foreach (Side CurrentSide in TheSides)
+            // Initialize the completed box flag
+            bool CompletedBox = false;
+
+            // Initialize the new board
+            Board NewBoard;
+
+
+            // Take a turn
+            do
             {
+                // Clear the completed box flag
+                CompletedBox = false;
+
+
+                // Take a turn on the current board
+                Side theSide;
+                NewBoard = Player2.TakeTurn( TheBoard, out theSide );
+
+
                 // Get the line endpoints
                 Point StartPoint;
                 Point EndPoint;
-                GetPointsFromSide( CurrentSide, out StartPoint, out EndPoint );
+                GetPointsFromSide( theSide, out StartPoint, out EndPoint );
+
                 //Store the points
                 PointsData point = new PointsData(StartPoint, EndPoint);
-                ComputerPlayerList.Add(point);
+                ComputerPlayerList.Add( point );
+
                 // Draw the line
                 drawArea.DrawLine( PenPlayer2, StartPoint, EndPoint );
-                
-               
-            }
 
-            label3.Text = TheBoard.GetScore(Player.Player2).ToString();
+
+                // If the computer completed a box
+                if( NewBoard.GetScore( Player.Player2 ) > TheBoard.GetScore( Player.Player2 ) )
+                {
+                    // Set the flag to true to take another turn
+                    CompletedBox = true;
+
+                    // Make the new board the current board
+                    TheBoard = NewBoard;
+
+                    // Update the score
+                    label3.Text = TheBoard.GetScore( Player.Player2 ).ToString();
+
+                    // add a red marker for computer player
+                    Label myLabel = new Label();
+                    myLabel.Location = new Point( StartPoint.X, StartPoint.Y );
+                    myLabel.BackColor = Color.Red;
+                    myLabel.AutoSize = true;
+                    myLabel.Refresh();
+                    myLabel.Text = "Player2";
+                    panel2.Controls.Add( myLabel );
+                    label4.Text = TheBoard.GetScore( Player.Player2 ).ToString();
+                }
+
+
+                // Make the new board the current board
+                TheBoard = NewBoard;
+            }
+            // Continue taking a turn as long as long as a box was completed
+            while( CompletedBox && !TheBoard.GameOver() );
+
+            
             // Switch the current player
             CurrentPlayer = Player.Player1;
 
