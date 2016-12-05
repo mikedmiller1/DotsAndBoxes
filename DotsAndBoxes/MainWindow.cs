@@ -64,24 +64,24 @@ namespace DotsAndBoxes
         /// <param name="e"></param>
         private void DrawButton_Click( object sender, EventArgs e )
         {
-            
+            panel2.BackColor = Color.White;
             ComputerPlayerList.Clear();
             HumanPlayerList.Clear();
             panel2.Controls.Clear(); //to remove all controls
             label3.Text = Convert.ToString(0);
+            label4.Text = Convert.ToString(0);
             panel2.Refresh();
             // Get the rows and columns
-            int rows = Int32.Parse(textBox1.Text);
-            int cols = Int32.Parse(textBox2.Text);
+            int rows = Int32.Parse(textBox1.Text)+1; 
+            int cols = Int32.Parse(textBox1.Text)+1; 
             ColIncrement = (panelSizeX - panelStartX) / rows;
             RowIncrement = (panelSizeY - panelStartY) / cols;
             
             // Draw the dots
             DrawDots( rows, cols );
 
-
             // Create a new board
-            TheBoard = new Board( rows - 1, cols - 1 );
+            TheBoard = new Board( rows-1, cols-1 );
             
         }
 
@@ -99,27 +99,6 @@ namespace DotsAndBoxes
              RowPosition = RowStart;
             drawRows = Rows;
             drawCols = Cols;
-
-            // Loop through the rows
-            //for (int RowNum = 0; RowNum < Rows; RowNum++)
-            //{
-            //    // Loop through the columns
-            //    for (int ColNum = 0; ColNum < Cols; ColNum++)
-            //    {
-            //        // Draw the dot
-            //        drawArea.DrawRectangle( PenBlack, ColPosition, RowPosition, DotSize, DotSize );
-
-            //        // Store it in the dot grid list
-            //        DotGrid.Add( new Dot( new Point( ColPosition, RowPosition ), RowNum, ColNum ) );
-
-            //        // Increment the column position
-            //        ColPosition = ColPosition + ColIncrement;
-            //    }
-
-            //    // Increment the row position and reset the column position
-            //    RowPosition = RowPosition + RowIncrement;
-            //    ColPosition = ColStart;
-            //}
         }
 
 
@@ -222,8 +201,8 @@ namespace DotsAndBoxes
                     TheBoard = NewBoard;
                     // add a blue marker for human player
                     Label myLabel = new Label();
-                    myLabel.Location = new Point(StartPoint.X,StartPoint.Y);
-                    myLabel.BackColor = Color.Blue;
+                    myLabel.Location = getPoint(TheSide.BoxSide, StartPoint.X, StartPoint.Y, EndPoint.X, EndPoint.Y, RowIncrement, ColIncrement);
+                    myLabel.BackColor = Color.LightBlue; 
                     myLabel.AutoSize = true;
                     myLabel.Refresh();
                     myLabel.Text = "Player1";
@@ -234,6 +213,7 @@ namespace DotsAndBoxes
                 // Check if the game is over
                 if( TheBoard.GameOver() )
                 {
+                    panel2.BackColor = Color.Gray;
                     GameOver();
                 }
             }
@@ -289,19 +269,19 @@ namespace DotsAndBoxes
 
                     // Make the new board the current board
                     TheBoard = NewBoard;
-
+                    
                     // Update the score
                     label3.Text = TheBoard.GetScore( Player.Player2 ).ToString();
 
                     // add a red marker for computer player
                     Label myLabel = new Label();
-                    myLabel.Location = new Point( StartPoint.X, StartPoint.Y );
+                    myLabel.Location = getPoint(theSide.BoxSide, StartPoint.X, StartPoint.Y, EndPoint.X, EndPoint.Y, RowIncrement, ColIncrement);
                     myLabel.BackColor = Color.Red;
                     myLabel.AutoSize = true;
                     myLabel.Refresh();
                     myLabel.Text = "Player2";
                     panel2.Controls.Add( myLabel );
-                    label4.Text = TheBoard.GetScore( Player.Player2 ).ToString();
+                   
                 }
 
 
@@ -319,6 +299,7 @@ namespace DotsAndBoxes
             // Check if the game is over
             if (TheBoard.GameOver())
             {
+                panel2.BackColor = Color.Gray;
                 GameOver();
             }
         }
@@ -559,6 +540,44 @@ namespace DotsAndBoxes
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        /// <summary>
+        /// this method gets the point where we should put the label inside the newly formed box for each player
+        /// </summary>
+        /// <param name="side"></param>
+        /// <param name="StartPointX"></param>
+        /// <param name="StartPointY"></param>
+        /// <param name="EndPointX"></param>
+        /// <param name="EndPointY"></param>
+        /// <param name="RowIncrement"></param>
+        /// <param name="ColIncrement"></param>
+        /// <returns></returns>
+        private Point getPoint(BoxSide side, int StartPointX, int StartPointY, int EndPointX, int EndPointY, int RowIncrement, int ColIncrement)
+        {
+            Point p; 
+            if (side.Equals(BoxSide.Top))
+            {
+                p = new Point(((StartPointX + EndPointX) / 2), StartPointY + (RowIncrement / 2));
+            }
+            else if (side.Equals(BoxSide.Bottom))
+            {
+                p = new Point(((StartPointX + EndPointX) / 2), StartPointY - (RowIncrement / 2));
+            }
+            else if (side.Equals(BoxSide.Left))
+            {
+                p = new Point(StartPointX + (ColIncrement / 2), (StartPointY + EndPointY) / 2);
+            }
+            else             {
+                p = new Point(StartPointX - (ColIncrement / 2), (StartPointY + EndPointY) / 2);
+            }
+
+            return p;
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
         {
 
         }
