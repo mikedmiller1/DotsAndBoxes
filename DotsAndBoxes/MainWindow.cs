@@ -34,8 +34,7 @@ namespace DotsAndBoxes
         int drawCols = 0;
         int humanScore = 0;
         Board TheBoard;
-        Solver Player1 = new Solver( Player.Player1, Skill.Beginner );
-        Solver Player2 = new Solver( Player.Player2, Skill.Expert );
+        Solver Player2 = new Solver( Player.Player2, Skill.Beginner );
         Player CurrentPlayer = Player.Player1;
 
         List<PointsData> ComputerPlayerList = new List<PointsData>();

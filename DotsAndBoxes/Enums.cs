@@ -22,9 +22,11 @@
 
     public enum Skill
     {
-        Beginner,
-        Intermediate,
-        Expert
+        Novice = 0,
+        Beginner = 2,
+        Intermediate = 3,
+        Expert = 4,
+        Master = 100
     }
 
 }

@@ -14,8 +14,6 @@ namespace DotsAndBoxes
         public readonly Skill SkillLevel;
         public static Random R = new Random();
 
-        private readonly int SearchDepth;
-
 
 
         /// <summary>
@@ -34,9 +32,6 @@ namespace DotsAndBoxes
             // Set the skill level
             SkillLevel = theSkill;
 
-            // Set the search depth based on the skill level
-            SearchDepth = Convert.ToInt32(SkillLevel) + 2;
-
         } // Solver
 
 
@@ -49,8 +44,74 @@ namespace DotsAndBoxes
         /// <returns>The board after playing this turn</returns>
         public Board TakeTurn(Board theBoard, out Side theSide)
         {
-            // Run Minimax on the current board
-            Board NewBoard = MiniMax(theBoard, SearchDepth, out theSide);
+            // Create a new board
+            Board NewBoard = new Board(theBoard);
+
+            /*
+            // Check for boxes with 3 claimed sides
+            List<Side> ListAvailableSides = theBoard.GetFreeSidesFromBoxesWithSides(3);
+            if (ListAvailableSides.Count() > 0)
+            {
+                // Get the first available side
+                theSide = ListAvailableSides[0];
+
+                // Create a new board
+                NewBoard = new Board(theBoard);
+
+                // Claim the chosen side
+                NewBoard.ClaimSide(theSide, PlayerID);
+
+                // Return the board
+                return NewBoard;
+            }
+
+            // Check for boxes with 0 claimed sides
+            ListAvailableSides = theBoard.GetFreeSidesFromBoxesWithSides(0);
+            if (ListAvailableSides.Count() > 0)
+            {
+                // Get the first available side
+                theSide = ListAvailableSides[0];
+
+                // Create a new board
+                NewBoard = new Board(theBoard);
+
+                // Claim the chosen side
+                NewBoard.ClaimSide(theSide, PlayerID);
+
+                // Return the board
+                return NewBoard;
+            }
+
+            // Check for boxes with 1 claimed side
+            ListAvailableSides = theBoard.GetFreeSidesFromBoxesWithSides(1);
+            if (ListAvailableSides.Count() > 0)
+            {
+                // Get the first available side
+                theSide = ListAvailableSides[0];
+
+                // Create a new board
+                NewBoard = new Board(theBoard);
+
+                // Claim the chosen side
+                NewBoard.ClaimSide(theSide, PlayerID);
+
+                // Return the board
+                return NewBoard;
+            }
+            */
+            
+
+            // Get the depth from the skill level
+            int theDepth = (int)SkillLevel;
+
+            // Start recursion using the max utility value
+            Turn theTurn = MaxValue(theBoard, theDepth);
+
+            // Get the chosen side
+            theSide = theTurn.TheSide;
+
+            // Claim the chosen side
+            NewBoard.ClaimSide(theSide, PlayerID);
 
             // Return the board
             return NewBoard;
@@ -59,212 +120,167 @@ namespace DotsAndBoxes
 
 
 
-
-        private Board MiniMax(Board theBoard, int theDepth, out Side theSide)
-        {
-            // If the depth is less than 0, we have reached the depth limit
-            if (theDepth < 0)
-            {
-                // Return the board
-                // ***** FOR DEVELOPMENT ONLY *****
-                // ***** WILL GET THE SIDE RECURSIVELY *****
-                theSide = new Side(0, 0, BoxSide.Invalid);
-                return theBoard;
-            }
-
-
-            // Create a copy of the board
-            Board NewBoard = new Board(theBoard);
-
-
-
-
-            // ***** FOR DEVELOPMENT ONLY *****
-            // ***** PICK A RANDOM FREE LINE *****
-            // Get the free sides
-            List<Side> FreeSides = NewBoard.GetFreeSides();
-
-            // get the number of free sides still avialable, below a certain amount we start minimax
-            int numFreeSides = FreeSides.Count();
-
-
-            // Pick a random side number
-            int SideNum = R.Next(0, FreeSides.Count - 1);
-
-            // Get the random side
-            Side RandomSide = FreeSides[SideNum];
-
-            // Get the first free side
-            //Side FirstSide = FreeSides[0];
-
-            // Use the side
-            theSide = RandomSide;
-
-            // group all boxes with their sides together
-            // FreeSides.GroupBy(t =>new { t.Column, t.Row });
-
-            // even in a open board, if a particular box has only 1 side in the free list, it means
-            // that two sides will be assigned, thus we need to start minimax
-
-            // FreeSides=FreeSides;
-            // List<Side> potentialBoxes = new List<Side>();
-            
-            for (int i = 0; i < NewBoard.NumRows; i++)
-            {
-                for (int j = 0; j < NewBoard.NumCols; j++)
-                {   // if any of these boxes have 1 sides still in free list, go get the next side based on heuristic
-                    if (FreeSides.Where(t => t.Column.Equals(i) && t.Row.Equals(j)).Count() ==1)
-                    {
-                        theSide = getNextSide(NewBoard, FreeSides,theDepth);
-                        break;
-                    }
-
-                }
-            }
-
-            //theSide = minSide;
-            //NewBoard.ClaimSide(theSide, PlayerID);
-            
-               
-
-                // Add it to the board
-                NewBoard.ClaimSide(theSide, PlayerID);
-                  
-
-            // Return the new board
-            return NewBoard;
-
-        } // MiniMax
-
         /// <summary>
-        /// This is supposed to be the min function. the computer picks the side that will give the
-        /// human player the least amount of boxes.
+        /// Returns the board with the minimum utility value
         /// </summary>
-        /// <param name="NewBoard"></param>
-        /// <param name="FreeSides"></param>
+        /// <param name="TheBoard"></param>
+        /// <param name="theDepth"></param>
         /// <returns></returns>
-       
-        public Side getNextSide(Board NewBoard, List<Side> FreeSides,int depth)
+        public Turn MinValue(Board TheBoard, int theDepth)
         {
-            List<Side> potentialBoxes = new List<Side>();
+            // Get the free sides of the current board
+            List<Side> FreeSides = TheBoard.GetFreeSides();
 
-            for (int i = 0; i < NewBoard.NumRows; i++)
+            // Initialize the best turn
+            Turn bestTurn = new Turn();
+
+            // Assign the utility value of the board
+            TheBoard.Utility = UtilityFunction(TheBoard);
+
+            // Loop through the free sides of the board
+            foreach (Side freeSide in FreeSides)
             {
-                for (int j = 0; j < NewBoard.NumCols; j++)
+                // Create a new board
+                Board NewBoard = new Board(TheBoard);
+
+                // Claim the current side
+                NewBoard.ClaimSide(freeSide, PlayerID);
+
+                // Intialize the max turn
+                Turn maxTurn = null;
+
+
+                // Check if we have reached the depth limit
+                if (theDepth == 0 || NewBoard.GameOver())
                 {
-                    if (FreeSides.Where(t => t.Column.Equals(i) && t.Row.Equals(j)).Count() == 1)
-                    {
-                        // Adds those boxes that have only 1 side left to fill, these are potential boxes
-                        potentialBoxes.AddRange(FreeSides.Where(t => t.Column.Equals(i) && t.Row.Equals(j)));
+                    // Calculate the utility function of the new board
+                    NewBoard.Utility = UtilityFunction(NewBoard);
 
-                        break;
-                    }
+                    // Create a new turn with the new board and the side
+                    maxTurn = new Turn(NewBoard, freeSide);
                 }
-            }
 
-            // now we have a list of all the sides of the boxes available, and the list of all the boxes that only
-            // have 1 side left given the sides that can form a box right now, we need to check the adjacent boxes 
-            // and see if boxes can be made there so if a side corresponding to box 0 0 was present,then we need to 
-            // check whether box 0 1 or 1 0 can be affected if a line was put there (i.e. how many boxes can human 
-            // form if computer puts line here--> minimize that) pick the side with the least number of possible boxes
-
-            // corner cases
-
-            //I want the adjancet boxes of every box that only has one side left
-
-            List<UtilitiesWithSides> sidesWithUtilities = new List<UtilitiesWithSides>();
-
-            for (int i = 0; i < potentialBoxes.Count; i++)
-            {
-                int utility = 0;
-
-                if (potentialBoxes[i].BoxSide == BoxSide.Top)
-                {
-                          
-                    if (FreeSides.Where(t => t.Row == potentialBoxes[i].Row + 1 && t.Column == potentialBoxes[i].Column).Count() - 1 == 1)
-                    {
-                        utility++;
-                    }
-
-                    if (FreeSides.Where(t => t.Row == potentialBoxes[i].Row - 1 && t.Column == potentialBoxes[i].Column).Count() - 1 == 1)
-                    {
-                        utility++;
-                    }
-
-                    sidesWithUtilities.Add(new  UtilitiesWithSides(utility, potentialBoxes[i]));
-                    
-                    // putin check to see if count -1 = 0, then that has precedence, so subtract it by 1 more
-
-                    //check count - 1 not just count, this gives direct measure if top influences adjancent box, 
-                    // if count-1 is 1, then the human player can form box there, and thats a problem
-                }
-                else if (potentialBoxes[i].BoxSide == BoxSide.Bottom)
-                {
-                  //  for (int j = 0; j < depth; j++) { }
-                    if (FreeSides.Where(t => t.Row == potentialBoxes[i].Row - 1 && t.Column == potentialBoxes[i].Column).Count() - 1 == 1)
-                    {
-                        utility++;
-                    }
-                    if (FreeSides.Where(t => t.Row == potentialBoxes[i].Row + 1 && t.Column == potentialBoxes[i].Column).Count() - 1 == 1)
-                    {
-                        utility++;
-                    }
-
-                    sidesWithUtilities.Add(new UtilitiesWithSides(utility, potentialBoxes[i]));
-                    
-                    //check count - 1 not just count
-                }
-                else if (potentialBoxes[i].BoxSide == BoxSide.Left)
-                {
-                    //for (int j = 0; j < depth; j++) { }
-                    if (FreeSides.Where(t => t.Row == potentialBoxes[i].Row && t.Column == potentialBoxes[i].Column + 1).Count() - 1 == 1)
-                    {
-                        utility++;
-                    }
-                    if (FreeSides.Where(t => t.Row == potentialBoxes[i].Row && t.Column == potentialBoxes[i].Column - 1).Count() - 1 == 1)
-                    {
-                        utility++;
-                    }
-
-                    sidesWithUtilities.Add(new UtilitiesWithSides(utility, potentialBoxes[i]));
-                        //check count - 1 not just count
-                    
-                }
+                // Otherwise, continue recursion
                 else
                 {
-                   // for (int j = 0; j < depth; j++) { }
-                    if (FreeSides.Where(t => t.Row == potentialBoxes[i].Row && t.Column == potentialBoxes[i].Column + 1).Count() - 1 == 1)
-                    {
-                        utility++;
-                    }
-                    if (FreeSides.Where(t => t.Row == potentialBoxes[i].Row && t.Column == potentialBoxes[i].Column - 1).Count() - 1 == 1)
-                    {
-                        utility++;
-                    }
-
-                    sidesWithUtilities.Add(new UtilitiesWithSides(utility, potentialBoxes[i]));
-                    
-
+                    // Get the max turn of the new board
+                    maxTurn = MaxValue(NewBoard, theDepth - 1);
                 }
 
-            } // end of for loop
+
+                // If the max turn is less than the best turn, store it
+                if (bestTurn.TheBoard == null || maxTurn.TheBoard.Utility < bestTurn.TheBoard.Utility)
+                {
+                    bestTurn.TheBoard = NewBoard;
+                    bestTurn.TheSide = freeSide;
+                }
+
+            }
+
+
+            // Return the best turn
+            return bestTurn;
+        }
 
 
 
-            //FreeSides.Where(t => t.Row == potentialBoxes[0].Row+1 && t.Column == potentialBoxes[0].Column);
-            //FreeSides.Where(t => t.Row == potentialBoxes[0].Row-1 && t.Column == potentialBoxes[0].Column);
-            //FreeSides.Where(t => t.Row == potentialBoxes[0].Row  && t.Column == potentialBoxes[0].Column+1);
-            //FreeSides.Where(t => t.Row == potentialBoxes[0].Row  && t.Column == potentialBoxes[0].Column-1);
-            // nowe we have every side that can make a box with its associated utility, pick the minimum one  and return it
+        /// <summary>
+        /// Returns the board with the maximum utility value
+        /// </summary>
+        /// <param name="NewBoard"></param>
+        /// <param name="theDepth"></param>
+        /// <returns></returns>
+        public Turn MaxValue(Board TheBoard, int theDepth)
+        {
+            // Get the free sides of the current board
+            List<Side> FreeSides = TheBoard.GetFreeSides();
+
+            // Initialize the best turn
+            Turn bestTurn = new Turn();
+
+            // Assign the utility value of the board
+            TheBoard.Utility = UtilityFunction(TheBoard);
+
+            // Loop through the free sides of the board
+            foreach (Side freeSide in FreeSides)
+            {
+                // Create a new board
+                Board NewBoard = new Board(TheBoard);
+
+                // Claim the current side
+                NewBoard.ClaimSide(freeSide, PlayerID);
+
+                // Intialize the max turn
+                Turn minTurn = null;
 
 
-            // pick the side with the minimum of all the utilities for the human to create the least amount of boxes with
-            sidesWithUtilities.OrderBy(t => t.utility);
+                // Check if we have reached the depth limit
+                if (theDepth == 0 || NewBoard.GameOver() )
+                {
+                    // Calculate the utility function of the new board
+                    NewBoard.Utility = UtilityFunction(NewBoard);
 
-            return sidesWithUtilities[0].side;
-        } // end of get side
+                    // Create a new turn with the new board and the side
+                    minTurn = new Turn(NewBoard, freeSide);
+                }
 
+                // Otherwise, continue recursion
+                else
+                {
+                    // Get the min turn of the new board
+                    minTurn = MinValue(NewBoard, theDepth - 1);
+                }
+
+
+                // If the min turn is greater than the best turn, store it
+                if (bestTurn.TheBoard == null || minTurn.TheBoard.Utility > bestTurn.TheBoard.Utility)
+                {
+                    bestTurn.TheBoard = NewBoard;
+                    bestTurn.TheSide = freeSide;
+                }
+
+            }
+
+
+            // Return the best turn
+            return bestTurn;
+        }
+
+
+
+        /// <summary>
+        /// Returns the utility funciton of the provided board
+        /// </summary>
+        /// <param name="NewBoard"></param>
+        /// <returns></returns>
+        public int UtilityFunction (Board NewBoard)
+        {
+            int utility = 0;
+            for (int i = 0; i < NewBoard.NumRows; i++)
+            {
+                for (int j = 0; j < NewBoard.NumCols; j++)
+                {
+                    if (NewBoard.GetFreeSides().Where(t => t.Column.Equals(i) && t.Row.Equals(j)).Count() == 1)
+                    {
+                        // assign weight make a 100
+                        utility = utility + 100;
+                    }
+                    if (NewBoard.GetFreeSides().Where(t => t.Column.Equals(i) && t.Row.Equals(j)).Count() == 2)
+                    {
+                        utility = utility - 100;
+                    }
+                    if (NewBoard.GetFreeSides().Where(t => t.Column.Equals(i) && t.Row.Equals(j)).Count() == 3 || NewBoard.GetFreeSides().Where(t => t.Column.Equals(i) && t.Row.Equals(j)).Count() == 4)
+                    {
+                        utility = utility + 1;
+                    }
+                }
+            }
+
+            return utility;
+        }
     } // Solver class
+
+
 
     public class UtilitiesWithSides
     {

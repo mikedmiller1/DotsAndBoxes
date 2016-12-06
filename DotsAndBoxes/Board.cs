@@ -8,6 +8,7 @@ namespace DotsAndBoxes
         // Properties
         public readonly int NumRows;
         public readonly int NumCols;
+        public  int Utility;
 
         protected Box[,] _board;
 
@@ -226,6 +227,49 @@ namespace DotsAndBoxes
         }
 
 
+        /// <summary>
+        /// Returns a list of Sides that are associated with boxes having the specified number of sides already claimed
+        /// </summary>
+        /// <param name="NumSides">The number of claimed sides of the box</param>
+        /// <returns>A list of Sides</returns>
+        public List<Side> GetFreeSidesFromBoxesWithSides(int NumSides)
+        {
+            // Initialize the free side list
+            List<Side> theFreeSides = new List<Side>();
+
+
+            // Loop through the rows
+            for (int RowNum = 0; RowNum < NumRows; RowNum++)
+            {
+                // Loop through the columns
+                for (int ColNum = 0; ColNum < NumCols; ColNum++)
+                {
+                    // If the box has the specified number of sides claimed
+                    if (_board[RowNum, ColNum].NumSides() == NumSides)
+                    {
+                        // If the top side is free
+                        if (_board[RowNum, ColNum].Top.Owner == Player.None)
+                        { theFreeSides.Add(new Side(RowNum, ColNum, BoxSide.Top)); }
+
+                        // If the bottom side is free
+                        if (_board[RowNum, ColNum].Bottom.Owner == Player.None)
+                        { theFreeSides.Add(new Side(RowNum, ColNum, BoxSide.Bottom)); }
+
+                        // If the left side is free
+                        if (_board[RowNum, ColNum].Left.Owner == Player.None)
+                        { theFreeSides.Add(new Side(RowNum, ColNum, BoxSide.Left)); }
+
+                        // If the right side is free
+                        if (_board[RowNum, ColNum].Right.Owner == Player.None)
+                        { theFreeSides.Add(new Side(RowNum, ColNum, BoxSide.Right)); }
+                    }
+                }
+            }
+
+
+            // Return the free side list
+            return theFreeSides;
+        }
 
         /// <summary>
         /// Returns the number of boxes owned by the specified player
