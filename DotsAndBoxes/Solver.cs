@@ -90,7 +90,7 @@ namespace DotsAndBoxes
                 Board NewBoard = new Board(TheBoard);
 
                 // Claim the current side
-                NewBoard.ClaimSide(freeSide, PlayerID);
+                NewBoard.ClaimSide(freeSide, Player.Player1);
 
                 // Initialize the max turn
                 Turn maxTurn = null;
@@ -204,28 +204,20 @@ namespace DotsAndBoxes
             // Initialize the utility value to 0
             int utility = 0;
 
+
             // Define the weights
             int WeightScore = 20;
             int WeightThree = 15;
             int WeightTwo   = 1;
 
+            // Get the free sides for each box side count
+            List<Side> FreeSidesBoxesWith2Claimed = NewBoard.GetFreeSidesFromBoxesWithSides( 2 );
+            List<Side> FreeSidesBoxesWith3Claimed = NewBoard.GetFreeSidesFromBoxesWithSides( 3 );
 
-            // Loop through the rows
-            for (int i = 0; i < NewBoard.NumRows; i++)
-            {
-                // Loop through the columns
-                for (int j = 0; j < NewBoard.NumCols; j++)
-                {
-                    // Get the free sides for each box side count
-                    List<Side> FreeSidesBoxesWith2Claimed = NewBoard.GetFreeSidesFromBoxesWithSides( 2 );
-                    List<Side> FreeSidesBoxesWith3Claimed = NewBoard.GetFreeSidesFromBoxesWithSides( 3 );
-
-                    // Calculate the utility value
-                    utility += (NewBoard.GetScore( PlayerID ) * WeightScore) + (NewBoard.GetScore( Player.Player1 ) * WeightScore);
-                    utility += FreeSidesBoxesWith2Claimed.Count() * WeightTwo;
-                    utility -= FreeSidesBoxesWith3Claimed.Count() * WeightThree;
-                }
-            }
+            // Calculate the utility value
+            utility += (NewBoard.GetScore( PlayerID ) * WeightScore) - (NewBoard.GetScore( Player.Player1 ) * WeightScore);
+            utility += FreeSidesBoxesWith2Claimed.Count() * WeightTwo;
+            utility -= FreeSidesBoxesWith3Claimed.Count() * WeightThree;
 
 
             // Return the utility value
