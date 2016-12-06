@@ -8,7 +8,7 @@ namespace DotsAndBoxes
         // Properties
         public readonly int NumRows;
         public readonly int NumCols;
-        public  int Utility;
+        public int Utility;
 
         protected Box[,] _board;
 
@@ -234,7 +234,7 @@ namespace DotsAndBoxes
         /// <returns>A list of Sides</returns>
         public List<Side> GetFreeSidesFromBoxesWithSides(int NumSides)
         {
-            // Initialize the free side list
+            // Get the free sides
             List<Side> theFreeSides = new List<Side>();
 
 
@@ -247,20 +247,20 @@ namespace DotsAndBoxes
                     // If the box has the specified number of sides claimed
                     if (_board[RowNum, ColNum].NumSides() == NumSides)
                     {
-                        // If the top side is free
-                        if (_board[RowNum, ColNum].Top.Owner == Player.None)
+                        // If the top side is free and the box above also has the specified number of sides claimed
+                        if (_board[RowNum, ColNum].Top.Owner == Player.None && (RowNum == 0 || _board[ RowNum - 1, ColNum ].Top.Owner == Player.None) )
                         { theFreeSides.Add(new Side(RowNum, ColNum, BoxSide.Top)); }
 
                         // If the bottom side is free
-                        if (_board[RowNum, ColNum].Bottom.Owner == Player.None)
+                        if (_board[RowNum, ColNum].Bottom.Owner == Player.None && (RowNum == NumRows - 1 || _board[ RowNum + 1, ColNum ].Top.Owner == Player.None) )
                         { theFreeSides.Add(new Side(RowNum, ColNum, BoxSide.Bottom)); }
 
                         // If the left side is free
-                        if (_board[RowNum, ColNum].Left.Owner == Player.None)
+                        if (_board[RowNum, ColNum].Left.Owner == Player.None && (ColNum == 0 || _board[ RowNum, ColNum - 1 ].Top.Owner == Player.None) )
                         { theFreeSides.Add(new Side(RowNum, ColNum, BoxSide.Left)); }
 
                         // If the right side is free
-                        if (_board[RowNum, ColNum].Right.Owner == Player.None)
+                        if (_board[RowNum, ColNum].Right.Owner == Player.None && (ColNum == NumCols - 1 || _board[ RowNum, ColNum + 1 ].Top.Owner == Player.None) )
                         { theFreeSides.Add(new Side(RowNum, ColNum, BoxSide.Right)); }
                     }
                 }

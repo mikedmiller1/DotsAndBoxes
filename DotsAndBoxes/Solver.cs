@@ -47,60 +47,6 @@ namespace DotsAndBoxes
             // Create a new board
             Board NewBoard = new Board(theBoard);
 
-            /*
-            // Check for boxes with 3 claimed sides
-            List<Side> ListAvailableSides = theBoard.GetFreeSidesFromBoxesWithSides(3);
-            if (ListAvailableSides.Count() > 0)
-            {
-                // Get the first available side
-                theSide = ListAvailableSides[0];
-
-                // Create a new board
-                NewBoard = new Board(theBoard);
-
-                // Claim the chosen side
-                NewBoard.ClaimSide(theSide, PlayerID);
-
-                // Return the board
-                return NewBoard;
-            }
-
-            // Check for boxes with 0 claimed sides
-            ListAvailableSides = theBoard.GetFreeSidesFromBoxesWithSides(0);
-            if (ListAvailableSides.Count() > 0)
-            {
-                // Get the first available side
-                theSide = ListAvailableSides[0];
-
-                // Create a new board
-                NewBoard = new Board(theBoard);
-
-                // Claim the chosen side
-                NewBoard.ClaimSide(theSide, PlayerID);
-
-                // Return the board
-                return NewBoard;
-            }
-
-            // Check for boxes with 1 claimed side
-            ListAvailableSides = theBoard.GetFreeSidesFromBoxesWithSides(1);
-            if (ListAvailableSides.Count() > 0)
-            {
-                // Get the first available side
-                theSide = ListAvailableSides[0];
-
-                // Create a new board
-                NewBoard = new Board(theBoard);
-
-                // Claim the chosen side
-                NewBoard.ClaimSide(theSide, PlayerID);
-
-                // Return the board
-                return NewBoard;
-            }
-            */
-            
-
             // Get the depth from the skill level
             int theDepth = (int)SkillLevel;
 
@@ -146,7 +92,7 @@ namespace DotsAndBoxes
                 // Claim the current side
                 NewBoard.ClaimSide(freeSide, PlayerID);
 
-                // Intialize the max turn
+                // Initialize the max turn
                 Turn maxTurn = null;
 
 
@@ -210,7 +156,7 @@ namespace DotsAndBoxes
                 // Claim the current side
                 NewBoard.ClaimSide(freeSide, PlayerID);
 
-                // Intialize the max turn
+                // Initialize the max turn
                 Turn minTurn = null;
 
 
@@ -249,47 +195,44 @@ namespace DotsAndBoxes
 
 
         /// <summary>
-        /// Returns the utility funciton of the provided board
+        /// Returns the utility function of the provided board
         /// </summary>
         /// <param name="NewBoard"></param>
         /// <returns></returns>
         public int UtilityFunction (Board NewBoard)
         {
+            // Initialize the utility value to 0
             int utility = 0;
+
+            // Define the weights
+            int WeightScore = 20;
+            int WeightThree = 15;
+            int WeightTwo   = 1;
+
+
+            // Loop through the rows
             for (int i = 0; i < NewBoard.NumRows; i++)
             {
+                // Loop through the columns
                 for (int j = 0; j < NewBoard.NumCols; j++)
                 {
-                    if (NewBoard.GetFreeSides().Where(t => t.Column.Equals(i) && t.Row.Equals(j)).Count() == 1)
-                    {
-                        // assign weight make a 100
-                        utility = utility + 100;
-                    }
-                    if (NewBoard.GetFreeSides().Where(t => t.Column.Equals(i) && t.Row.Equals(j)).Count() == 2)
-                    {
-                        utility = utility - 100;
-                    }
-                    if (NewBoard.GetFreeSides().Where(t => t.Column.Equals(i) && t.Row.Equals(j)).Count() == 3 || NewBoard.GetFreeSides().Where(t => t.Column.Equals(i) && t.Row.Equals(j)).Count() == 4)
-                    {
-                        utility = utility + 1;
-                    }
+                    // Get the free sides for each box side count
+                    List<Side> FreeSidesBoxesWith2Claimed = NewBoard.GetFreeSidesFromBoxesWithSides( 2 );
+                    List<Side> FreeSidesBoxesWith3Claimed = NewBoard.GetFreeSidesFromBoxesWithSides( 3 );
+
+                    // Calculate the utility value
+                    utility += (NewBoard.GetScore( PlayerID ) * WeightScore) + (NewBoard.GetScore( Player.Player1 ) * WeightScore);
+                    utility += FreeSidesBoxesWith2Claimed.Count() * WeightTwo;
+                    utility -= FreeSidesBoxesWith3Claimed.Count() * WeightThree;
                 }
             }
 
+
+            // Return the utility value
             return utility;
         }
+
     } // Solver class
 
 
-
-    public class UtilitiesWithSides
-    {
-        public int utility;
-        public Side side;
-        public UtilitiesWithSides(int Utility, Side Side)
-        {
-            utility = Utility;
-            side = Side;
-        }
-    }
 }
