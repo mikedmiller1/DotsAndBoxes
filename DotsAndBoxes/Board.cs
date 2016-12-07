@@ -227,6 +227,40 @@ namespace DotsAndBoxes
         }
 
 
+
+        /// <summary>
+        /// Returns a list of Boxes that have the specified number of sides already claimed
+        /// </summary>
+        /// <param name="NumSides"></param>
+        /// <returns></returns>
+        public List<Box> GetBoxesWithClaimedSides( int NumSides )
+        {
+            // Initialize the boxes
+            List<Box> theBoxes = new List<Box>();
+
+
+            // Loop through the rows
+            for ( int RowNum = 0; RowNum < NumRows; RowNum++ )
+            {
+                // Loop through the columns
+                for ( int ColNum = 0; ColNum < NumCols; ColNum++ )
+                {
+                    // If the box has the specified number of sides claimed
+                    if ( _board[ RowNum, ColNum ].NumSides() == NumSides )
+                    {
+                        // Add it to the list
+                        theBoxes.Add( _board[ RowNum, ColNum ] );
+                    }
+                }
+            }
+
+
+            // Return the free side list
+            return theBoxes;
+        }
+
+
+
         /// <summary>
         /// Returns a list of Sides that are associated with boxes having the specified number of sides already claimed
         /// </summary>
@@ -234,7 +268,7 @@ namespace DotsAndBoxes
         /// <returns>A list of Sides</returns>
         public List<Side> GetFreeSidesFromBoxesWithSides(int NumSides)
         {
-            // Get the free sides
+            // Initialize the free sides
             List<Side> theFreeSides = new List<Side>();
 
 
@@ -247,20 +281,20 @@ namespace DotsAndBoxes
                     // If the box has the specified number of sides claimed
                     if (_board[RowNum, ColNum].NumSides() == NumSides)
                     {
-                        // If the top side is free and the box above also has the specified number of sides claimed
-                        if (_board[RowNum, ColNum].Top.Owner == Player.None && (RowNum == 0 || _board[ RowNum - 1, ColNum ].Top.Owner == Player.None) )
+                        // If the top side is free
+                        if (_board[RowNum, ColNum].Top.Owner == Player.None && (RowNum == 0 || _board[ RowNum - 1, ColNum ].NumSides() <= NumSides) )
                         { theFreeSides.Add(new Side(RowNum, ColNum, BoxSide.Top)); }
 
                         // If the bottom side is free
-                        if (_board[RowNum, ColNum].Bottom.Owner == Player.None && (RowNum == NumRows - 1 || _board[ RowNum + 1, ColNum ].Top.Owner == Player.None) )
+                        if (_board[RowNum, ColNum].Bottom.Owner == Player.None && (RowNum == NumRows - 1 || _board[ RowNum + 1, ColNum ].NumSides() <= NumSides) )
                         { theFreeSides.Add(new Side(RowNum, ColNum, BoxSide.Bottom)); }
 
                         // If the left side is free
-                        if (_board[RowNum, ColNum].Left.Owner == Player.None && (ColNum == 0 || _board[ RowNum, ColNum - 1 ].Top.Owner == Player.None) )
+                        if (_board[RowNum, ColNum].Left.Owner == Player.None && (ColNum == 0 || _board[ RowNum, ColNum - 1 ].NumSides() <= NumSides) )
                         { theFreeSides.Add(new Side(RowNum, ColNum, BoxSide.Left)); }
 
                         // If the right side is free
-                        if (_board[RowNum, ColNum].Right.Owner == Player.None && (ColNum == NumCols - 1 || _board[ RowNum, ColNum + 1 ].Top.Owner == Player.None) )
+                        if (_board[RowNum, ColNum].Right.Owner == Player.None && (ColNum == NumCols - 1 || _board[ RowNum, ColNum + 1 ].NumSides() <= NumSides) )
                         { theFreeSides.Add(new Side(RowNum, ColNum, BoxSide.Right)); }
                     }
                 }
@@ -270,6 +304,8 @@ namespace DotsAndBoxes
             // Return the free side list
             return theFreeSides;
         }
+
+
 
         /// <summary>
         /// Returns the number of boxes owned by the specified player

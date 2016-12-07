@@ -210,14 +210,14 @@ namespace DotsAndBoxes
             int WeightThree = 15;
             int WeightTwo   = 1;
 
-            // Get the free sides for each box side count
-            List<Side> FreeSidesBoxesWith2Claimed = NewBoard.GetFreeSidesFromBoxesWithSides( 2 );
-            List<Side> FreeSidesBoxesWith3Claimed = NewBoard.GetFreeSidesFromBoxesWithSides( 3 );
+            // Get the boxes for each box side count
+            List<Box> BoxesWith2SidesClaimed = NewBoard.GetBoxesWithClaimedSides( 2 );
+            List<Box> BoxesWith3SidesClaimed = NewBoard.GetBoxesWithClaimedSides( 3 );
 
-            // Calculate the utility value
+            // Calculate the utility value from the score
             utility += (NewBoard.GetScore( PlayerID ) * WeightScore) - (NewBoard.GetScore( Player.Player1 ) * WeightScore);
-            utility += FreeSidesBoxesWith2Claimed.Count() * WeightTwo;
-            utility -= FreeSidesBoxesWith3Claimed.Count() * WeightThree;
+            utility += BoxesWith2SidesClaimed.Count() * WeightTwo;
+            utility -= BoxesWith3SidesClaimed.Count() * WeightThree;
 
 
             // Return the utility value

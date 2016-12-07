@@ -116,7 +116,183 @@ namespace DotsAndBoxesTests
         }
 
 
+        [TestMethod]
+        public void GetBoxesWithClaimedSides1By1Test()
+        {
+            //Arrange
+            Player thePlayer = Player.Player1;
+
+            Board Board0Sides = new Board( 1, 1 );
+            Board Board1Sides = new Board( 1, 1 );
+            Board Board2Sides = new Board( 1, 1 );
+            Board Board3Sides = new Board( 1, 1 );
+            Board Board4Sides = new Board( 1, 1 );
+
+            // Act
+            Board1Sides.ClaimSide( 0, 0, BoxSide.Top, thePlayer );
+
+            Board2Sides.ClaimSide( 0, 0, BoxSide.Top, thePlayer );
+            Board2Sides.ClaimSide( 0, 0, BoxSide.Bottom, thePlayer );
+
+            Board3Sides.ClaimSide( 0, 0, BoxSide.Top, thePlayer );
+            Board3Sides.ClaimSide( 0, 0, BoxSide.Bottom, thePlayer );
+            Board3Sides.ClaimSide( 0, 0, BoxSide.Left, thePlayer );
+
+            Board4Sides.ClaimSide( 0, 0, BoxSide.Top, thePlayer );
+            Board4Sides.ClaimSide( 0, 0, BoxSide.Bottom, thePlayer );
+            Board4Sides.ClaimSide( 0, 0, BoxSide.Left, thePlayer );
+            Board4Sides.ClaimSide( 0, 0, BoxSide.Right, thePlayer );
+
+            // Assert
+            Assert.IsTrue( Board0Sides.GetBoxesWithClaimedSides( 0 ).Count == 1, "Boxes with 0 claimed sides not correct" );
+            Assert.IsTrue( Board0Sides.GetBoxesWithClaimedSides( 1 ).Count == 0, "Boxes with 0 claimed sides not correct" );
+            Assert.IsTrue( Board0Sides.GetBoxesWithClaimedSides( 2 ).Count == 0, "Boxes with 0 claimed sides not correct" );
+            Assert.IsTrue( Board0Sides.GetBoxesWithClaimedSides( 3 ).Count == 0, "Boxes with 0 claimed sides not correct" );
+            Assert.IsTrue( Board0Sides.GetBoxesWithClaimedSides( 4 ).Count == 0, "Boxes with 0 claimed sides not correct" );
+
+            Assert.IsTrue( Board1Sides.GetBoxesWithClaimedSides( 0 ).Count == 0, "Boxes with 1 claimed sides not correct" );
+            Assert.IsTrue( Board1Sides.GetBoxesWithClaimedSides( 1 ).Count == 1, "Boxes with 1 claimed sides not correct" );
+            Assert.IsTrue( Board1Sides.GetBoxesWithClaimedSides( 2 ).Count == 0, "Boxes with 1 claimed sides not correct" );
+            Assert.IsTrue( Board1Sides.GetBoxesWithClaimedSides( 3 ).Count == 0, "Boxes with 1 claimed sides not correct" );
+            Assert.IsTrue( Board1Sides.GetBoxesWithClaimedSides( 4 ).Count == 0, "Boxes with 1 claimed sides not correct" );
+
+            Assert.IsTrue( Board2Sides.GetBoxesWithClaimedSides( 0 ).Count == 0, "Boxes with 2 claimed sides not correct" );
+            Assert.IsTrue( Board2Sides.GetBoxesWithClaimedSides( 1 ).Count == 0, "Boxes with 2 claimed sides not correct" );
+            Assert.IsTrue( Board2Sides.GetBoxesWithClaimedSides( 2 ).Count == 1, "Boxes with 2 claimed sides not correct" );
+            Assert.IsTrue( Board2Sides.GetBoxesWithClaimedSides( 3 ).Count == 0, "Boxes with 2 claimed sides not correct" );
+            Assert.IsTrue( Board2Sides.GetBoxesWithClaimedSides( 4 ).Count == 0, "Boxes with 2 claimed sides not correct" );
+
+            Assert.IsTrue( Board3Sides.GetBoxesWithClaimedSides( 0 ).Count == 0, "Boxes with 3 claimed sides not correct" );
+            Assert.IsTrue( Board3Sides.GetBoxesWithClaimedSides( 1 ).Count == 0, "Boxes with 3 claimed sides not correct" );
+            Assert.IsTrue( Board3Sides.GetBoxesWithClaimedSides( 2 ).Count == 0, "Boxes with 3 claimed sides not correct" );
+            Assert.IsTrue( Board3Sides.GetBoxesWithClaimedSides( 3 ).Count == 1, "Boxes with 3 claimed sides not correct" );
+            Assert.IsTrue( Board3Sides.GetBoxesWithClaimedSides( 4 ).Count == 0, "Boxes with 3 claimed sides not correct" );
+
+            Assert.IsTrue( Board4Sides.GetBoxesWithClaimedSides( 0 ).Count == 0, "Boxes with 3 claimed sides not correct" );
+            Assert.IsTrue( Board4Sides.GetBoxesWithClaimedSides( 1 ).Count == 0, "Boxes with 3 claimed sides not correct" );
+            Assert.IsTrue( Board4Sides.GetBoxesWithClaimedSides( 2 ).Count == 0, "Boxes with 3 claimed sides not correct" );
+            Assert.IsTrue( Board4Sides.GetBoxesWithClaimedSides( 3 ).Count == 0, "Boxes with 3 claimed sides not correct" );
+            Assert.IsTrue( Board4Sides.GetBoxesWithClaimedSides( 4 ).Count == 1, "Boxes with 3 claimed sides not correct" );
+        }
 
 
+        [TestMethod]
+        public void GetBoxesWithClaimedSides2By2Test()
+        {
+            //Arrange
+            Player thePlayer = Player.Player1;
+
+            Board Board0Sides = new Board( 2, 2 );
+            Board Board1Sides = new Board( 2, 2 );
+            Board Board2Sides = new Board( 2, 2 );
+            Board Board3Sides = new Board( 2, 2 );
+            Board Board4Sides = new Board( 2, 2 );
+
+            // Act
+            Board1Sides.ClaimSide( 0, 0, BoxSide.Top, thePlayer );
+
+            Board2Sides.ClaimSide( 0, 0, BoxSide.Top, thePlayer );
+            Board2Sides.ClaimSide( 0, 0, BoxSide.Bottom, thePlayer );
+
+            Board3Sides.ClaimSide( 0, 0, BoxSide.Top, thePlayer );
+            Board3Sides.ClaimSide( 0, 0, BoxSide.Bottom, thePlayer );
+            Board3Sides.ClaimSide( 0, 0, BoxSide.Left, thePlayer );
+
+            Board4Sides.ClaimSide( 0, 0, BoxSide.Top, thePlayer );
+            Board4Sides.ClaimSide( 0, 0, BoxSide.Bottom, thePlayer );
+            Board4Sides.ClaimSide( 0, 0, BoxSide.Left, thePlayer );
+            Board4Sides.ClaimSide( 0, 0, BoxSide.Right, thePlayer );
+
+            // Assert
+            Assert.IsTrue( Board0Sides.GetBoxesWithClaimedSides( 0 ).Count == 4, "Boxes with 0 claimed sides not correct" );
+            Assert.IsTrue( Board0Sides.GetBoxesWithClaimedSides( 1 ).Count == 0, "Boxes with 0 claimed sides not correct" );
+            Assert.IsTrue( Board0Sides.GetBoxesWithClaimedSides( 2 ).Count == 0, "Boxes with 0 claimed sides not correct" );
+            Assert.IsTrue( Board0Sides.GetBoxesWithClaimedSides( 3 ).Count == 0, "Boxes with 0 claimed sides not correct" );
+            Assert.IsTrue( Board0Sides.GetBoxesWithClaimedSides( 4 ).Count == 0, "Boxes with 0 claimed sides not correct" );
+
+            Assert.IsTrue( Board1Sides.GetBoxesWithClaimedSides( 0 ).Count == 3, "Boxes with 1 claimed sides not correct" );
+            Assert.IsTrue( Board1Sides.GetBoxesWithClaimedSides( 1 ).Count == 1, "Boxes with 1 claimed sides not correct" );
+            Assert.IsTrue( Board1Sides.GetBoxesWithClaimedSides( 2 ).Count == 0, "Boxes with 1 claimed sides not correct" );
+            Assert.IsTrue( Board1Sides.GetBoxesWithClaimedSides( 3 ).Count == 0, "Boxes with 1 claimed sides not correct" );
+            Assert.IsTrue( Board1Sides.GetBoxesWithClaimedSides( 4 ).Count == 0, "Boxes with 1 claimed sides not correct" );
+
+            Assert.IsTrue( Board2Sides.GetBoxesWithClaimedSides( 0 ).Count == 2, "Boxes with 2 claimed sides not correct" );
+            Assert.IsTrue( Board2Sides.GetBoxesWithClaimedSides( 1 ).Count == 1, "Boxes with 2 claimed sides not correct" );
+            Assert.IsTrue( Board2Sides.GetBoxesWithClaimedSides( 2 ).Count == 1, "Boxes with 2 claimed sides not correct" );
+            Assert.IsTrue( Board2Sides.GetBoxesWithClaimedSides( 3 ).Count == 0, "Boxes with 2 claimed sides not correct" );
+            Assert.IsTrue( Board2Sides.GetBoxesWithClaimedSides( 4 ).Count == 0, "Boxes with 2 claimed sides not correct" );
+
+            Assert.IsTrue( Board3Sides.GetBoxesWithClaimedSides( 0 ).Count == 2, "Boxes with 3 claimed sides not correct" );
+            Assert.IsTrue( Board3Sides.GetBoxesWithClaimedSides( 1 ).Count == 1, "Boxes with 3 claimed sides not correct" );
+            Assert.IsTrue( Board3Sides.GetBoxesWithClaimedSides( 2 ).Count == 0, "Boxes with 3 claimed sides not correct" );
+            Assert.IsTrue( Board3Sides.GetBoxesWithClaimedSides( 3 ).Count == 1, "Boxes with 3 claimed sides not correct" );
+            Assert.IsTrue( Board3Sides.GetBoxesWithClaimedSides( 4 ).Count == 0, "Boxes with 3 claimed sides not correct" );
+
+            Assert.IsTrue( Board4Sides.GetBoxesWithClaimedSides( 0 ).Count == 1, "Boxes with 3 claimed sides not correct" );
+            Assert.IsTrue( Board4Sides.GetBoxesWithClaimedSides( 1 ).Count == 2, "Boxes with 3 claimed sides not correct" );
+            Assert.IsTrue( Board4Sides.GetBoxesWithClaimedSides( 2 ).Count == 0, "Boxes with 3 claimed sides not correct" );
+            Assert.IsTrue( Board4Sides.GetBoxesWithClaimedSides( 3 ).Count == 0, "Boxes with 3 claimed sides not correct" );
+            Assert.IsTrue( Board4Sides.GetBoxesWithClaimedSides( 4 ).Count == 1, "Boxes with 3 claimed sides not correct" );
+        }
+
+
+        [TestMethod]
+        public void GetBoxesWithClaimedSides3By3Test()
+        {
+            //Arrange
+            Player thePlayer = Player.Player1;
+
+            Board Board0Sides = new Board( 3, 3 );
+            Board Board1Sides = new Board( 3, 3 );
+            Board Board2Sides = new Board( 3, 3 );
+            Board Board3Sides = new Board( 3, 3 );
+            Board Board4Sides = new Board( 3, 3 );
+
+            // Act
+            Board1Sides.ClaimSide( 1, 1, BoxSide.Top, thePlayer );
+
+            Board2Sides.ClaimSide( 1, 1, BoxSide.Top, thePlayer );
+            Board2Sides.ClaimSide( 1, 1, BoxSide.Bottom, thePlayer );
+
+            Board3Sides.ClaimSide( 1, 1, BoxSide.Top, thePlayer );
+            Board3Sides.ClaimSide( 1, 1, BoxSide.Bottom, thePlayer );
+            Board3Sides.ClaimSide( 1, 1, BoxSide.Left, thePlayer );
+
+            Board4Sides.ClaimSide( 1, 1, BoxSide.Top, thePlayer );
+            Board4Sides.ClaimSide( 1, 1, BoxSide.Bottom, thePlayer );
+            Board4Sides.ClaimSide( 1, 1, BoxSide.Left, thePlayer );
+            Board4Sides.ClaimSide( 1, 1, BoxSide.Right, thePlayer );
+
+            // Assert
+            Assert.IsTrue( Board0Sides.GetBoxesWithClaimedSides( 0 ).Count == 9, "Boxes with 0 claimed sides not correct" );
+            Assert.IsTrue( Board0Sides.GetBoxesWithClaimedSides( 1 ).Count == 0, "Boxes with 0 claimed sides not correct" );
+            Assert.IsTrue( Board0Sides.GetBoxesWithClaimedSides( 2 ).Count == 0, "Boxes with 0 claimed sides not correct" );
+            Assert.IsTrue( Board0Sides.GetBoxesWithClaimedSides( 3 ).Count == 0, "Boxes with 0 claimed sides not correct" );
+            Assert.IsTrue( Board0Sides.GetBoxesWithClaimedSides( 4 ).Count == 0, "Boxes with 0 claimed sides not correct" );
+
+            Assert.IsTrue( Board1Sides.GetBoxesWithClaimedSides( 0 ).Count == 7, "Boxes with 1 claimed sides not correct" );
+            Assert.IsTrue( Board1Sides.GetBoxesWithClaimedSides( 1 ).Count == 2, "Boxes with 1 claimed sides not correct" );
+            Assert.IsTrue( Board1Sides.GetBoxesWithClaimedSides( 2 ).Count == 0, "Boxes with 1 claimed sides not correct" );
+            Assert.IsTrue( Board1Sides.GetBoxesWithClaimedSides( 3 ).Count == 0, "Boxes with 1 claimed sides not correct" );
+            Assert.IsTrue( Board1Sides.GetBoxesWithClaimedSides( 4 ).Count == 0, "Boxes with 1 claimed sides not correct" );
+
+            Assert.IsTrue( Board2Sides.GetBoxesWithClaimedSides( 0 ).Count == 6, "Boxes with 2 claimed sides not correct" );
+            Assert.IsTrue( Board2Sides.GetBoxesWithClaimedSides( 1 ).Count == 2, "Boxes with 2 claimed sides not correct" );
+            Assert.IsTrue( Board2Sides.GetBoxesWithClaimedSides( 2 ).Count == 1, "Boxes with 2 claimed sides not correct" );
+            Assert.IsTrue( Board2Sides.GetBoxesWithClaimedSides( 3 ).Count == 0, "Boxes with 2 claimed sides not correct" );
+            Assert.IsTrue( Board2Sides.GetBoxesWithClaimedSides( 4 ).Count == 0, "Boxes with 2 claimed sides not correct" );
+
+            Assert.IsTrue( Board3Sides.GetBoxesWithClaimedSides( 0 ).Count == 5, "Boxes with 3 claimed sides not correct" );
+            Assert.IsTrue( Board3Sides.GetBoxesWithClaimedSides( 1 ).Count == 3, "Boxes with 3 claimed sides not correct" );
+            Assert.IsTrue( Board3Sides.GetBoxesWithClaimedSides( 2 ).Count == 0, "Boxes with 3 claimed sides not correct" );
+            Assert.IsTrue( Board3Sides.GetBoxesWithClaimedSides( 3 ).Count == 1, "Boxes with 3 claimed sides not correct" );
+            Assert.IsTrue( Board3Sides.GetBoxesWithClaimedSides( 4 ).Count == 0, "Boxes with 3 claimed sides not correct" );
+
+            Assert.IsTrue( Board4Sides.GetBoxesWithClaimedSides( 0 ).Count == 4, "Boxes with 3 claimed sides not correct" );
+            Assert.IsTrue( Board4Sides.GetBoxesWithClaimedSides( 1 ).Count == 4, "Boxes with 3 claimed sides not correct" );
+            Assert.IsTrue( Board4Sides.GetBoxesWithClaimedSides( 2 ).Count == 0, "Boxes with 3 claimed sides not correct" );
+            Assert.IsTrue( Board4Sides.GetBoxesWithClaimedSides( 3 ).Count == 0, "Boxes with 3 claimed sides not correct" );
+            Assert.IsTrue( Board4Sides.GetBoxesWithClaimedSides( 4 ).Count == 1, "Boxes with 3 claimed sides not correct" );
+        }
     }
 }
