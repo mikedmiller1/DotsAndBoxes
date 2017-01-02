@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
+
 namespace DotsAndBoxes
 {
     public partial class MainWindow : Form
@@ -24,21 +25,24 @@ namespace DotsAndBoxes
         int RowIncrement = 0;
         int DotSize = 20;   // The size of the dot to draw
         List<Dot> DotGrid = new List<Dot>();  // List of drawn dots on the game board
+        bool mouseIsDown = false;
         int mouseDownPointX = 0;
         int mouseDownPointY = 0;
+        Point mouseLastMove;
         int mouseUpPointX = 0;
         int mouseUpPointY = 0;
         int RowPosition = 0;
         int ColPosition = 0;
         int drawRows = 0;
         int drawCols = 0;
-        int humanScore = 0;
         Board TheBoard;
         Solver Player2 = new Solver( Player.Player2, Skill.Intermediate );
         Player CurrentPlayer = Player.Player1;
 
         List<PointsData> ComputerPlayerList = new List<PointsData>();
         List<PointsData> HumanPlayerList = new List<PointsData>();
+
+
 
         /// <summary>
         /// Constructor
@@ -69,46 +73,40 @@ namespace DotsAndBoxes
             panel2.Controls.Clear(); //to remove all controls
             label3.Text = Convert.ToString(0);
             label4.Text = Convert.ToString(0);
-            panel2.Refresh();
+            
             // Get the rows and columns
-            int rows = Int32.Parse(textBox1.Text)+1; 
-            int cols = Int32.Parse(textBox1.Text)+1; 
+            int rows = Int32.Parse(textBox1.Text) + 1; 
+            int cols = Int32.Parse(textBox1.Text) + 1; 
             ColIncrement = (panelSizeX - panelStartX) / rows;
             RowIncrement = (panelSizeY - panelStartY) / cols;
             
-            // Draw the dots
-            DrawDots( rows, cols );
+            // Define the starting position of the dot grid
+            ColPosition = ColStart;
+            RowPosition = RowStart;
+            drawRows = rows;
+            drawCols = cols;
 
             // Create a new board
-            TheBoard = new Board( rows-1, cols-1 );
-            
+            TheBoard = new Board( rows - 1, cols - 1 );
+
+
+            // Draw the board
+            panel2.Refresh();
         }
 
 
 
         /// <summary>
-        /// Draws the dots
-        /// </summary>
-        /// <param name="Rows">Number of rows of dots</param>
-        /// <param name="Cols">Number of columns of dots</param>
-        private void DrawDots( int Rows, int Cols )
-        {
-            // Define the starting position of the dot grid
-             ColPosition = ColStart;
-             RowPosition = RowStart;
-            drawRows = Rows;
-            drawCols = Cols;
-        }
-
-
-
-        /// <summary>
-        /// Game area click down
+        /// Called when the mouse is clicked in the game panel
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void panel2_MouseDown( object sender, MouseEventArgs e )
         {
+            // Set the mouse down flag
+            mouseIsDown = true;
+
+            // Record the coordinates
             mouseDownPointX = e.X;
             mouseDownPointY = e.Y;
         }
@@ -116,14 +114,47 @@ namespace DotsAndBoxes
 
 
         /// <summary>
-        /// Game area click release
+        /// Called when the mouse is moved in the game panel
+        /// Used to draw the temporary line as the user plays
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void panel2_MouseMove( object sender, MouseEventArgs e )
+        {
+            // Check if the mouse is currently clicked
+            if( mouseIsDown )
+            {
+                // Create the mouse down point
+                Point StartMousePoint = new Point( mouseDownPointX, mouseDownPointY );
+
+                // Get the current mouse coordinates
+                Point CurrentMousePoint = panel2.PointToClient( Cursor.Position );
+
+                // Draw a line from the mouse down point to the current position
+                //Graphics g = panel2.CreateGraphics();
+                //g.DrawLine( PenPlayer1, StartMousePoint, CurrentMousePoint );
+                //ControlPaint.DrawReversibleLine( panel2.PointToScreen( StartMousePoint ), panel2.PointToScreen( CurrentMousePoint ), PenPlayer1.Color );
+            }
+
+        }
+
+
+
+        /// <summary>
+        /// Called when the mouse is released in the game panel
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void panel2_MouseUp( object sender, MouseEventArgs e )
         {
+            // Clear the mouse is down flag
+            mouseIsDown = false;
+
+            // Record the coordinates
             mouseUpPointX = e.X;
             mouseUpPointY = e.Y;
+
+            // Send the start and end coordinates to the human move
             HumanMove( mouseDownPointX, mouseDownPointY, mouseUpPointX, mouseUpPointY );
         }
 
@@ -483,16 +514,16 @@ namespace DotsAndBoxes
         }
 
         
+
         /// <summary>
-        /// Drwa the board and all lines made by human and computer, must draw all lines in this
+        /// Draw the board and all lines made by human and computer, must draw all lines in this
         /// paint method to maintain board graphics when minimizing
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void panel2_Paint(object sender, PaintEventArgs e)
         {
-
-            // draw board here, so that it will stay when minimized
+            // Draw board here, so that it will stay when minimized
             for (int RowNum = 0; RowNum < drawRows; RowNum++)
             {
                 // Loop through the columns
@@ -514,7 +545,8 @@ namespace DotsAndBoxes
                 ColPosition = ColStart;
 
             }
-            // drwaing the lines here keeps them from erasing when minimizing windows
+
+            // Drawing the lines here keeps them from erasing when minimizing windows
             foreach( PointsData t in ComputerPlayerList)
             {
                 e.Graphics.DrawLine(PenPlayer2, t.StartPoint, t.EndPoint);
@@ -525,23 +557,23 @@ namespace DotsAndBoxes
                 e.Graphics.DrawLine(PenPlayer1, t.StartPoint, t.EndPoint);
             }
 
-            
-        }// end of method
+        }
         
+
+
         private void label4_Click(object sender, EventArgs e)
         {
             label4.Text = TheBoard.GetScore(Player.Player1).ToString();
         }
+
+
 
         private void label3_Click(object sender, EventArgs e)
         {
             label3.Text = TheBoard.GetScore(Player.Player2).ToString();
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
 
-        }
 
         /// <summary>
         /// this method gets the point where we should put the label inside the newly formed box for each player
@@ -576,12 +608,14 @@ namespace DotsAndBoxes
             return p;
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
 
-        }
     } // end of class
 
+
+
+    /// <summary>
+    /// Contains a start and end point for a line
+    /// </summary>
     public partial class PointsData
     {
         public Point StartPoint;
