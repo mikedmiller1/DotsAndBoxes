@@ -28,7 +28,7 @@ namespace DotsAndBoxes
         bool mouseIsDown = false;
         int mouseDownPointX = 0;
         int mouseDownPointY = 0;
-        Point mouseLastMove;
+        Point mouseLastPoint = new Point(0,0);
         int mouseUpPointX = 0;
         int mouseUpPointY = 0;
         int RowPosition = 0;
@@ -130,10 +130,19 @@ namespace DotsAndBoxes
                 // Get the current mouse coordinates
                 Point CurrentMousePoint = panel2.PointToClient( Cursor.Position );
 
+
+                // Get a graphics object for the game panel
+                Graphics g = panel2.CreateGraphics();
+
+                // Remove the previous line by drawing over it with the background color
+                g.DrawLine( new Pen( panel2.BackColor ), StartMousePoint, mouseLastPoint );
+
                 // Draw a line from the mouse down point to the current position
-                //Graphics g = panel2.CreateGraphics();
-                //g.DrawLine( PenPlayer1, StartMousePoint, CurrentMousePoint );
+                g.DrawLine( PenPlayer1, StartMousePoint, CurrentMousePoint );
                 //ControlPaint.DrawReversibleLine( panel2.PointToScreen( StartMousePoint ), panel2.PointToScreen( CurrentMousePoint ), PenPlayer1.Color );
+
+                // Store the current mouse point as the previous point
+                mouseLastPoint = CurrentMousePoint;
             }
 
         }
@@ -153,6 +162,17 @@ namespace DotsAndBoxes
             // Record the coordinates
             mouseUpPointX = e.X;
             mouseUpPointY = e.Y;
+
+
+            // Create the mouse down point
+            Point StartMousePoint = new Point( mouseDownPointX, mouseDownPointY );
+
+            // Get a graphics object for the game panel
+            Graphics g = panel2.CreateGraphics();
+
+            // Remove the previous line by drawing over it with the background color
+            g.DrawLine( new Pen( panel2.BackColor ), StartMousePoint, mouseLastPoint );
+
 
             // Send the start and end coordinates to the human move
             HumanMove( mouseDownPointX, mouseDownPointY, mouseUpPointX, mouseUpPointY );
