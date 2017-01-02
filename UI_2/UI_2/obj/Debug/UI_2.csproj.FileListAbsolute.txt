@@ -1,9 +1,0 @@
-c:\users\jayshah\documents\visual studio 2015\Projects\UI_2\UI_2\bin\Debug\UI_2.exe.config
-c:\users\jayshah\documents\visual studio 2015\Projects\UI_2\UI_2\bin\Debug\UI_2.exe
-c:\users\jayshah\documents\visual studio 2015\Projects\UI_2\UI_2\bin\Debug\UI_2.pdb
-c:\users\jayshah\documents\visual studio 2015\Projects\UI_2\UI_2\obj\Debug\UI_2.csprojResolveAssemblyReference.cache
-c:\users\jayshah\documents\visual studio 2015\Projects\UI_2\UI_2\obj\Debug\UI_2.Form1.resources
-c:\users\jayshah\documents\visual studio 2015\Projects\UI_2\UI_2\obj\Debug\UI_2.Properties.Resources.resources
-c:\users\jayshah\documents\visual studio 2015\Projects\UI_2\UI_2\obj\Debug\UI_2.csproj.GenerateResource.Cache
-c:\users\jayshah\documents\visual studio 2015\Projects\UI_2\UI_2\obj\Debug\UI_2.exe
-c:\users\jayshah\documents\visual studio 2015\Projects\UI_2\UI_2\obj\Debug\UI_2.pdb
